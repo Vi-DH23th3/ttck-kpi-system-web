@@ -1,0 +1,39 @@
+.container {
+    width: 100%;
+    margin: 0 auto;
+    max-width: 400px;
+    max-height: 500px;
+}
+.title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #222222;
+}
+.content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin: 0 auto;
+}
+.label-title {
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 5px;
+    color: #354fd1;
+}
+.input-box {
+    width: 90%;
+    padding: 10px;
+    border: 1px solid #767474;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    font-size: 14px;
+}
+.remember-forgot {
+    display: flex;
+    justify-content: space-between;
+    align-items: right;
+    margin-bottom: 15px;
+}
