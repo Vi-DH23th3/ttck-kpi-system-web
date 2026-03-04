@@ -44,6 +44,7 @@ class RegisteredUserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'must_change_password' => 0, // Đặt cờ không bắt buộc đổi mật khẩu khi đăng ký
         ]);
         //phát sự kiện đã đăng ký thành công
         event(new Registered($user));

@@ -9,6 +9,7 @@ use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
+use App\Http\Controllers\PasswordChangeController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
@@ -36,6 +37,9 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
+
+    Route::get('password-change', [PasswordChangeController::class, 'index'])->name('password.change');
+    Route::post('password-change', [PasswordChangeController::class, 'update'])->name('password.change.update');
     Route::get('verify-email', EmailVerificationPromptController::class)
         ->name('verification.notice');
     //verification.notice: hiển thị thông báo yêu cầu người dùng xác minh email của họ. Nếu người dùng đã xác minh email, họ sẽ được chuyển hướng đến trang dashboard.

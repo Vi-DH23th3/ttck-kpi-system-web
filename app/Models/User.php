@@ -21,6 +21,12 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'chucvu',
+        'don_vi_id',
+        'role',
+        'avatar',
+        'trang_thai',
+        'must_change_password',
     ];
 
     /**

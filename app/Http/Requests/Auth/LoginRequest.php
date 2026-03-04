@@ -40,15 +40,18 @@ class LoginRequest extends FormRequest
     public function authenticate(): void
     {
         $this->ensureIsNotRateLimited();
-
         if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
-
+            
             throw ValidationException::withMessages([
                 'email' => trans('auth.failed'),
             ]);
         }
-
+        $user = Auth::user();
+        if($user->must_change_password === 1)
+        {
+            session(['force_password_change' => true]);
+        }
         RateLimiter::clear($this->throttleKey());
     }
 

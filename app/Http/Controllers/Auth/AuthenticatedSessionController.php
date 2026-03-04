@@ -27,7 +27,12 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate();
 
         $request->session()->regenerate();
-
+        if(session('force_password_change'))
+        {
+            session()->forget('force_password_change'); 
+            return redirect()->route('password.change') 
+                            ->with('info', 'Vui lòng đổi mật khẩu để tiếp tục.');
+        }
         return redirect()->intended(route('dashboard', absolute: false));
     }
 
