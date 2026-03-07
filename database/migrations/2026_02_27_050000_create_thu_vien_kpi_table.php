@@ -18,7 +18,7 @@ return new class extends Migration
 // Ghi chú
 
             $table->id();
-            $table->string('ten_cong_viec');
+            $table->string('ten_kpi');
             $table->string('chi_tieu_kpi');
             $table->foreignId('dm_cv_id')->constrained('danhmuc_cong_viec')->onDelete('cascade');
             $table->foreignId('nam_hoc_id')->constrained('nam_hoc')->onDelete('cascade');

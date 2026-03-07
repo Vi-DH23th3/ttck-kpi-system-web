@@ -3,43 +3,51 @@
 
 @section('content')
           <div class="container-xxl flex-grow-1 container-p-y">
-<h4 class="py-3 breadcrumb-wrapper mb-4">
-  <span class="text-muted">Danh sách người dùng</span> 
-</h4>
+<div class="d-flex">
+  <div class="">
+    <button class="btn btn-muted mb-3 btn-add-user py-3 mb-4" data-bs-toggle="offcanvas" data-bs-target="#offcanvasAddFilter" aria-controls="offcanvasAddFilter">
+      <i class="bi bi-filter"></i>
+    </button>
+  </div>
+  <h4 class="py-3 breadcrumb-wrapper mb-4">
+    <span class="text-muted">Danh sách người dùng</span> 
+  </h4>
+</div>
 
 <div class="app-ecommerce-User-list">
   <!-- Bảng người dùng -->
   <div class="card">
     <div class="card-datatable table-responsive rounded-3 shadow">
-      <div class="d-flex justify-content-between align-items-center p-3 flex-wrap gap-2">
-        <!-- Tìm kiếm theo tên và email -->
-        <form class="form-control w-auto" method="GET" action="">   
-          @csrf                  
-          <input type="text" class="border-0" name="search" placeholder="Search" value="{{request('search')}}">  
-          <button type="submit" class="btn btn-outline-secondary border-0"><i class="bi bi-search"></i></button> 
-        </form> 
+      <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasAddFilter" aria-labelledby="addFilterLabel">
+        <!-- Header Thêm người dùng -->
+        <div class="offcanvas-header py-4">
+          <h5 id="addUserLabel" class="offcanvas-title text-muted">Filter user</h5>
+          <button type="button" class="btn-close bg-label-secondary text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body border-top">
+      
         <!-- Lọc theo đơn vị -->
-        <form class="form-control w-auto" method="GET" action="">   
+        <form class="form-control w-auto m-2" method="GET" action="">   
           @csrf                  
           <select name="filter_don_vi" class="form-select border-0" event="change" onchange="this.form.submit()">
             <option value="">Lọc theo đơn vị</option>
-            <option value="1" {{ request('filter_don_vi') == '1' ? 'selected' : '' }}>Ban giám đốc</option>
-            <option value="2" {{ request('filter_don_vi') == '2' ? 'selected' : '' }}>Phòng công nghệ thông tin</option>
+            @foreach($dsdonvi as $dsdv)
+            <option value="{{$dsdv->id}}" {{ request('filter_don_vi') == $dsdv->id ? 'selected' : '' }}>{{$dsdv->ten_don_vi}}</option>
+            @endforeach
           </select>
         </form>
         <!-- Lọc theo chức vụ -->
-        <form class="form-control w-auto" method="GET" action="">   
+        <form class="form-control w-auto m-2" method="GET" action="">   
           @csrf                  
           <select name="filter_chucvu" class="form-select border-0" event="change" onchange="this.form.submit()">
             <option value="">Lọc theo chức vụ</option>
-            <option value="GD" {{ request('filter_chucvu') == 'GD' ? 'selected' : '' }}>Giám đốc</option>
-            <option value="TP" {{ request('filter_chucvu') == 'TP' ? 'selected' : '' }}>Trưởng phòng</option>
-            <option value="PTP" {{ request('filter_chucvu') == 'PTP' ? 'selected' : '' }}>Phó trưởng phòng</option>
-            <option value="NV" {{ request('filter_chucvu') == 'NV' ? 'selected' : '' }}>Nhân viên</option>
+            @foreach($dschucvu as $cv)
+            <option value="{{$cv->id}}" {{ request('filter_chucvu') == $cv->id ? 'selected' : '' }}>{{$cv->ten_chuc_vu}}</option>
+            @endforeach
           </select> 
         </form>
         <!-- Lọc theo trạng thái -->
-        <form class="form-control w-auto" method="GET" action="">   
+        <form class="form-control w-auto m-2" method="GET" action="">   
           @csrf                  
           <select name="filter_trang_thai" class="form-select border-0" event="change" onchange="this.form.submit()">
             <option value="">Lọc theo trạng thái</option>
@@ -48,17 +56,17 @@
           </select> 
         </form>
         <!-- Lọc theo quyền -->
-        <form class="form-control w-auto" method="GET" action="">   
+        <form class="form-control w-auto m-2" method="GET" action="">   
           @csrf                  
           <select name="filter_role" class="form-select border-0" event="change" onchange="this.form.submit()">
             <option value="">Lọc theo quyền</option>
-            <option value="0" {{ request('filter_role') == 'admin' ? 'selected' : '' }}>Admin</option>
-            <option value="1" {{ request('filter_role') == 'manager' ? 'selected' : '' }}>Manager</option>
+            <option value="admin" {{ request('filter_role') == 'admin' ? 'selected' : '' }}>Admin</option>
+            <option value="manager" {{ request('filter_role') == 'manager' ? 'selected' : '' }}>Manager</option>
             <option value="staff" {{ request('filter_role') == 'staff' ? 'selected' : '' }}>Staff</option>
           </select>
         </form>
         <!-- Lọc người dùng chưa đổi mật khẩu -->
-         <form action="" class="form-control w-auto" method="GET">
+         <form action="" class="form-control w-auto m-2" method="GET">
           @csrf                  
           <select name="filter_change_password" class="form-select border-0" event="change" onchange="this.form.submit()">
             <option value="">Lọc người dùng chưa đổi mật khẩu mặc định</option>
@@ -67,7 +75,9 @@
           </select> 
 
          </form>
-        
+        </div>
+      </div>
+      <div class="d-flex justify-content-between align-items-center p-3 flex-wrap gap-2">  
         <!-- Thêm người dùng bằng file -->
         <div class="d-flex justify-content-between align-items-center p-3 gap-2"> 
           <form class="form-control w-100 d-flex" method="POST" action="{{ route('users.import') }}" enctype="multipart/form-data">
@@ -126,10 +136,13 @@
           <label class="form-label text-muted" for="add-User-list-image">Chức vụ</label>
           <select name="chuc_vu" id="chuc_vu_add" class="form-select">
             <option class="menu_chucvu" value="">Chọn chức vụ</option>
-            <option class="menu_chucvu" value="GD">Giám đốc</option>
+            @foreach($dschucvu as $cv)
+            <option value="{{$cv->id}}" class="menu_chucvu">{{$cv->ten_chuc_vu}}</option>
+            @endforeach
+            <!-- <option class="menu_chucvu" value="GD">Giám đốc</option>
             <option class="menu_chucvu" value="TP">Trưởng phòng</option>
             <option class="menu_chucvu" value="PTP">Phó trưởng phòng</option>
-            <option class="menu_chucvu" value="NV">Nhân viên</option>
+            <option class="menu_chucvu" value="NV">Nhân viên</option> -->
           </select>
           <a href="">Thêm chức vụ mới</a>
         </div>
@@ -148,8 +161,11 @@
             <label class="form-label text-muted" for="add-User-list-image">Đơn vị</label>
             <select name="don_vi_id" id="don_vi_add" class="form-select add-donvi">
               <option class="" value="0">Chọn đơn vị</option>
-              <option value="1">Ban giám đốc</option>
-              <option value="2">Phòng công nghệ thông tin</option>
+              @foreach($dsdonvi as $dsdv)
+              <option value="{{$dsdv->id}}" >{{$dsdv->ten_don_vi}}</option>
+              @endforeach
+              <!-- <option value="1">Ban giám đốc</option>
+              <option value="2">Phòng công nghệ thông tin</option> -->
             </select>
           </div>
         <!-- Mật khẩu -->
@@ -189,17 +205,21 @@
         <div class="mb-3">
           <label class="form-label text-muted" for="ecommerce-User-list-image">Chức vụ</label>
           <select name="chuc_vu" id="chuc_vu" class="form-select edit-chucvu">
-            <option class="" value="">Chọn chức vụ</option>
-            <option class="GD" value="GD">Giám đốc</option>
+            <!-- <option class="" value="">Chọn chức vụ</option> -->
+            <!-- @foreach($dschucvu as $cv)
+            <option value="{{$cv->id}}" class="menu_chucvu">{{$cv->ten_chuc_vu}}</option>
+            @endforeach -->
+            <!-- <option class="GD" value="GD">Giám đốc</option>
             <option class="TP" value="TP">Trưởng phòng</option>
             <option class="PTP" value="PTP">Phó trưởng phòng</option>
-            <option class="NV" value="NV">Nhân viên</option>
+            <option class="NV" value="NV">Nhân viên</option> -->
           </select>
         </div>
         <!-- Danh sách đơn vị -->
         <div class="mb-3">
           <label class="form-label text-muted" for="ecommerce-User-list-image">Đơn vị</label>
           <select name="don_vi_id" id="don_vi_edit" class="form-select edit-donvi">
+           
           </select>
         </div>
         <!-- Danh sách quyền -->
@@ -233,53 +253,7 @@
 
 </div>
 @push('script')
-  @if (session('info'))
-  <script>
-    Swal.fire({
-        icon: "info",
-        title: "Thông báo",
-        text: "{{ session('info') }}",
-        showConfirmButton: false,      // Bỏ nút OK
-        timer: 3000,                   // Tự đóng sau 3 giây
-        timerProgressBar: true
-    });
-  </script>
-  @endif
-  @if(session('import_errors'))
-    <ul class="import_errors">
-      @foreach(session('import_errors') as $error)
-        @if(is_array($error)) {{-- Kiểm tra để tránh lỗi type int --}}
-          <li>
-            Dòng {{ $error["row"] ?? 'N/A' }}: 
-            {{ is_array($error["errors"]) ? implode(", ", $error["errors"]) : $error["errors"] }}
-          </li>
-        @endif
-      @endforeach
-    </ul>
-    <script>
-      let errorHtml = $(".import_errors");
-      Swal.fire({
-          icon: "error",
-          title: "Lỗi",
-          html: errorHtml,
-          showConfirmButton: true,      // Bỏ nút OK
-          //timer: 3000,                   // Tự đóng sau 3 giây
-          timerProgressBar: true
-      });
-    </script>
-  @endif
-    @if(session('success'))
-      <script>
-      Swal.fire({
-          icon: "success",
-          title: "Thành công",
-          text: "{{ session('success') }}",
-          showConfirmButton: false,      // Bỏ nút OK
-          timer: 3000,                   // Tự đóng sau 3 giây
-          timerProgressBar: true
-      });
-    </script>
-    @endif
+
   <script src="{{ asset('js/user.js') }}"></script>
 @endpush
 

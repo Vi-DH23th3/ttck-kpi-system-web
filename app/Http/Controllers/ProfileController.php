@@ -3,14 +3,21 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+//use Illuminate\Container\Attributes\Storage;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Session\Store;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 
 class ProfileController extends Controller
 {
+    public function index( ): View
+    {
+        return view('profile.index');
+    }
     /**
      * Display the user's profile form.
      */
@@ -26,15 +33,27 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
-
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        $user = $request->user();
+        $user->fill($request->validated());
+        if($request->hasFile('avatar')){
+            $file_avatar = $request->avatar;
+            $filename = 'user_' . $user->id . "." . $request->avatar->getClientOriginalExtension();
+            $path = $file_avatar->storeAs('avatars', $filename, 'public');
+            if($user->avatar){
+                Storage::disk('public')->delete($user->avatar);
+            }
+            $user->avatar = $path;
         }
+        
+        if ($user->isDirty('email')) {
+            $user->email_verified_at = null; 
+            //Nếu người dùng thay đổi Email, hệ thống sẽ hủy trạng thái "Đã xác thực" của họ. 
+            //Điều này buộc họ phải xác nhận lại qua Email mới (nếu hệ thống của bạn có bật tính năng xác thực email).
+        }
+        
+        $user->save();
 
-        $request->user()->save();
-
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
+        return Redirect::route('profile.index')->with('success', 'Đã cập nhật thành công');
     }
 
     /**

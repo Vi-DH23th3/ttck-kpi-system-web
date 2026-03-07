@@ -23,8 +23,9 @@ class ProfileUpdateRequest extends FormRequest
                 'lowercase',
                 'email',
                 'max:255',
-                Rule::unique(User::class)->ignore($this->user()->id),
+                Rule::unique(User::class)->ignore($this->user()->id),//kiểm tra tính duy nhất trên toàn bộ bảng dữ liệu, ngoại trừ dòng có ID là ID của tôi
             ],
+            'avatar' => [ 'image','mimes:jpg,jpeg,png','max:2048']
         ];
     }
 }

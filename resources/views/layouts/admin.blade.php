@@ -15,22 +15,22 @@
             background-color: #d5d8d8ff;
         }
         @media (min-width: 992px) { /* Chỉ kích hoạt hover trên máy tính (màn hình lớn) */
-            .dropdown:hover > .dropdown-menu { 
+            .nav-admin:hover > .dropdown-menu { 
                 /* > là con trực tiếp */
                 display: block;
             }
             
             /* Hiệu ứng trượt nhẹ cho đẹp */
             .dropdown-menu {
-                animation: fadeIn 0.3s;
+                animation: ease 0.3s;
             }
         }
         /* bắt đầu từ mờ và nằm thấp hơn vị trí chuẩn 10px (translateY(10px)).
         to: Kết thúc ở trạng thái hiện rõ (opacity: 1) và trở về đúng vị trí chuẩn (translateY(0)). */
-        @keyframes fadeIn {
+        /* @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
-        }
+        } */
     </style>
 </head>
 <body>
@@ -48,8 +48,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        // function toggleSidebar() {
+        <!-- // function toggleSidebar() {
         //     const sidebar = document.getElementById('sidebar');
         //     const mainContent = document.getElementById('mainContent');
         //     const main_content = document.querySelector('.main-content');
@@ -63,8 +62,9 @@
         //         mainContent.classList.add('col-md-10');
         //         //main_content.classList.add('mt-4');
         //     }
-        // }
-    </script>
+        // } -->
+    
+    @include('layouts.message')
     @stack('script')
 </body>
 </html>

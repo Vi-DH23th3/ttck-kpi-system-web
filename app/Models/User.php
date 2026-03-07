@@ -21,7 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'chucvu',
+        'chuc_vu_id',
         'don_vi_id',
         'role',
         'avatar',
@@ -54,6 +54,10 @@ class User extends Authenticatable
     public function donVi()
     {
         return $this->belongsTo(DonVi::class, 'don_vi_id');
+    }
+    public function chucVu()
+    {
+        return $this->belongsTo(ChucVu::class, 'chuc_vu_id');
     }
     public function baoCaoCongViec()
     {

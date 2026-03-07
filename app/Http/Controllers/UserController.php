@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\DonVi;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\ChucVu;
 use App\Http\Requests\UserRequest;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
@@ -17,6 +18,9 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
+        $dsdonvi = DonVi::all();
+        $dschucvu = ChucVu::all();
+
         $query = User::query();
         if ($request->has('search')) {
             $search = $request->input('search');
@@ -24,13 +28,13 @@ class UserController extends Controller
                 ->orWhere('email', 'like', "%$search%");
         }
         if($request->ajax()){
-            $users = $query->with('donVi')->paginate(5)->withQueryString();
+            $users = $query->with('donVi', 'chucVu')->paginate(5)->withQueryString();
             return view('users.table', compact('users'))->render(); // Trả về HTML đã được render cho phần table
         }
         if($request->has('filter_chucvu'))
         {
             $filter = $request->input('filter_chucvu');
-            $query->where('chucvu', $filter);
+            $query->where('chuc_vu_id', $filter);
         }
         if($request->has('filter_don_vi')) {
             $filterDonVi = $request->input('filter_don_vi');
@@ -48,8 +52,8 @@ class UserController extends Controller
             $filterchangepassword = $request->input('filter_change_password');
             $query->where('must_change_password', $filterchangepassword);
         }
-        $users = $query->with('donVi')->paginate(5)->withQueryString();
-        return view('users.index', compact('users'));
+        $users = $query->with('donVi', 'chucVu')->paginate(5)->withQueryString();
+        return view('users.index', compact('users', 'dsdonvi', 'dschucvu'));
     }
 
     /**
@@ -116,7 +120,8 @@ class UserController extends Controller
     {
         $users = User::findOrFail($id);
         $donVis = DonVi::all() ?? [];
-        return response()->json(['success' => true, 'user' => $users, 'donVis' => $donVis]);
+        $chucVu = ChucVu::all();
+        return response()->json(['success' => true, 'user' => $users, 'donVis' => $donVis, 'chucVu' => $chucVu]);
     }
 
     /**

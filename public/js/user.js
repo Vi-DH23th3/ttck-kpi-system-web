@@ -19,20 +19,16 @@ $(document).ready(function () {
 
     // Sử dụng jQuery để xử lý sự kiện click trên nút "Edit"
     $(document).on("click", ".btn_edit_user", function () {
-        // e.preventDefault(); // Ngăn chặn việc load trang nếu là thẻ <a>
         let userId = $(this).data("user-id");
-        console.log(userId);
         $.ajax({
             url: "/users/" + userId + "/edit",
             method: "GET",
             success: function (response) {
-                console.log("Dữ liệu nhận được từ server:", response);
+                //console.log("Dữ liệu nhận được từ server:", response);
                 $(".edit-name").val(response.user.name); //val() là hàm của jQuery để đặt giá trị cho input;
                 $(".edit-email").val(response.user.email);
-                $("#chuc_vu").val(response.user.chucvu);
                 $("#role").val(response.user.role);
                 $("#trangthai").val(response.user.trang_thai);
-                //$("#offcanvasEditUser").offcanvas("show");
                 let donViSelect = $("#don_vi_edit");
                 donViSelect.empty(); // Xóa các tùy chọn hiện tại
                 response.donVis.forEach(function (donVi) {
@@ -40,6 +36,17 @@ $(document).ready(function () {
                         donVi.id === response.user.don_vi_id ? "selected" : "";
                     donViSelect.append(
                         `<option value="${donVi.id}" ${selected}>${donVi.ten_don_vi}</option>`,
+                    );
+                });
+                let chucVuSelect = $("#chuc_vu");
+                chucVuSelect.empty(); // Xóa các tùy chọn hiện tại
+                response.chucVu.forEach(function (chucVu) {
+                    let selected =
+                        chucVu.id === response.user.chuc_vu_id
+                            ? "selected"
+                            : "";
+                    chucVuSelect.append(
+                        `<option value="${chucVu.id}" ${selected}>${chucVu.ten_chuc_vu}</option>`,
                     );
                 });
                 //gán userId vào nút submit để sử dụng khi cập nhật
@@ -205,35 +212,4 @@ $(document).ready(function () {
             });
         }
     });
-    // Xử lý sự kiện click trên nút "Import"
-    // $(document).on("click", ".btn-import", function (e) {
-    //     e.preventDefault();
-    //     let formData = new FormData(this);
-    //     // let fileInput = $("#import_file")[0];
-    //     // if (fileInput.files.length === 0) {
-    //     //     Swal.fire({
-    //     //         icon: "error",
-    //     //         title: "Lỗi",
-    //     //         text: "Vui lòng chọn một tệp Excel để import.",
-    //     //     });
-    //     //     return;
-    //     // }
-    //     // formData.append("import_file", fileInput.files[0]);
-    //     $.ajax({
-    //         _token: $('meta[name="csrf-token"]').attr("content"),
-    //         url: "/users/import",
-    //         method: "POST",
-    //         data: formData,
-    //         processData: false,
-    //         contentType: false,
-    //         success: function (response) {
-    //             fetchUser();
-    //             Swal.fire({
-    //                 icon: "success",
-    //                 title: "Thành công",
-    //                 text: "Import người dùng thành công!",
-    //             });
-    //         },
-    //     });
-    // });
 });

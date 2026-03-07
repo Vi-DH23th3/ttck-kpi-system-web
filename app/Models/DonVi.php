@@ -8,15 +8,6 @@ class DonVi extends Model
 {
     protected $table = 'don_vi';
     protected $fillable = ['ten_don_vi', 'id_cha'];
-    public function cha()
-    {
-        return $this->belongsTo(DonVi::class, 'id_cha');
-    }
-
-    public function con()
-    {
-        return $this->hasMany(DonVi::class, 'id_cha');
-    }
 
     public function users()
     {
