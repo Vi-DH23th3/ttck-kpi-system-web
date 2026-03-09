@@ -4,11 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class KpiMau extends Model
+class ThuVienKPI extends Model
 {
+    protected $table = 'thu_vien_kpi';
+    protected $fillable = ['ten_kpi', 'chi_tieu', 'don_vi', 'chu_ky', 'dm_cv_id', 'nam_hoc_id', 'ghi_chu'];
     public function danhMuc()
     {
-        return $this->belongsTo(DanhMucKpi::class, 'id_dm_kpi');
+        return $this->belongsTo(DanhMucCongViec::class, 'dm_cv_id');
     }
 
     public function namHoc()

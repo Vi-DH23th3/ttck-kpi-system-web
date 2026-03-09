@@ -6,7 +6,6 @@
 <h4 class="py-3 breadcrumb-wrapper mb-4">
   <span class="text-muted">Danh sách phòng ban</span> 
 </h4>
-
 <div class="app-ecommerce-DonVi-list">
   <!-- Bảng phòng ban -->
   <div class="card">
@@ -17,9 +16,9 @@
         </div> 
     </div>
   </div>
-  <!-- Offcanvas để thêm người dùng mới -->
+  <!-- Offcanvas để thêm phòng ban mới -->
   <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasAddDonVi" aria-labelledby="addDonViLabel">
-    <!-- Header Thêm người dùng -->
+    <!-- Header Thêm phòng ban -->
     <div class="offcanvas-header py-4">
       <h5 id="addDonViLabel" class="offcanvas-title text-muted">Thêm phòng ban mới</h5>
       <button type="button" class="btn-close bg-label-secondary text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
@@ -28,7 +27,7 @@
     <div class="offcanvas-body border-top">
       <form class="pt-0" id="addDonVi-listListForm" onsubmit="return true" action="{{route('donvi.store')}}" method="POST">
         @csrf
-        <!-- Họ tên -->
+        <!-- tên công việc -->
         <div class="mb-3">
           <label class="form-label text-muted" for="add-DonVi-list-title">Tên phòng ban</label>
           <input type="text" class="form-control add-name" id="add-DonVi-list-title" placeholder="Nhập phòng ban" name="name_donvi" aria-label="DonVi-list title">

@@ -11,18 +11,25 @@ use Illuminate\Session\Store;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use App\Models\PhanCongCongViec;
 
 class ProfileController extends Controller
 {
-    public function index( ): View
+    public function index(Request $request ): View
     {
-        return view('profile.index');
+        $dscongviec = PhanCongCongViec::with(['thuVienKPI', 'nguoiGiao'])
+                        ->where('user_id', Auth::id())
+                        ->orderBy('created_at', 'desc')
+                        ->get();
+        $user = $request->user();
+        return view('profile.index', compact('dscongviec', 'user'));
     }
     /**
      * Display the user's profile form.
      */
     public function edit(Request $request): View
     {
+        
         return view('profile.edit', [
             'user' => $request->user(),
         ]);

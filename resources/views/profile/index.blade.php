@@ -61,14 +61,30 @@
                     <table class="table datatable-project">
                     <thead class="table-light">
                         <tr>
-                        <th></th>
-                        <th></th>
-                        <th class="fw-semibold">Project</th>
-                        <th class="text-nowrap fw-semibold">Total Task</th>
-                        <th class="fw-semibold">Progress</th>
-                        <th class="fw-semibold">Hours</th>
+                            
+                            <th>Nội dung công việc</th>
+                            <th>Chỉ tiêu</th>
+                            <th>Đơn vị</th>
+                            <th>Chu kỳ</th>
+                            <th>Người giao</th>
+                            <th>Trạng thái</th>
                         </tr>
                     </thead>
+                    <tbody>
+                        @foreach($dscongviec as $cv)
+                        <tr>
+                           
+                            <td>{{ $cv->thuVienKPI->ten_kpi }}</td>
+                            <td>{{ $cv->thuVienKPI->chi_tieu }}</td>
+                            <td>{{ $cv->thuVienKPI->don_vi }}</td>
+                            <td>{{ $cv->thuVienKPI->chu_ky }}</td>
+                            <td>{{ $cv->nguoiGiao->name }}</td>
+                            <td>
+                                <span class="badge bg-warning text-dark">Chờ thực hiện</span>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
                     </table>
                 </div>
                 </div>

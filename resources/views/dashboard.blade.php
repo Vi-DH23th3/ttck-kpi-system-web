@@ -1,6 +1,52 @@
 @extends('layouts.admin')
 @section('title', 'Dashboard')
 @section('content')
+<div class="container-xxl flex-grow-1 container-p-y bg-light">
+    <h3 class="text-muted">Tổng quan</h3>
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-1">
+        
+    </div>
+    <h3 class="text-muted">Lọc</h3>
+    <div class="d-flex justify-content-start align-items-center flex-wrap gap-2">
+        <form class="form-control w-auto m-2" method="GET" action="">   
+              @csrf                  
+              <select name="filter_trang_thai" class="form-select border-0" event="change" onchange="this.form.submit()">
+                <option value="">Lọc theo Phòng ban</option>
+                <option value="1" {{ request('filter_trang_thai') == '1' ? 'selected' : '' }}>Hoạt động</option>
+                <option value="0" {{ request('filter_trang_thai') == '0' ? 'selected' : '' }}>Bị khóa</option>
+              </select> 
+            </form>
+            <!-- Lọc theo quyền -->
+            <form class="form-control w-auto m-2" method="GET" action="">   
+              @csrf                  
+              <select name="filter_role" class="form-select border-0" event="change" onchange="this.form.submit()">
+                <option value="">Lọc độ ưu tiên</option>
+                <option value="admin" {{ request('filter_role') == 'admin' ? 'selected' : '' }}>Admin</option>
+                <option value="manager" {{ request('filter_role') == 'manager' ? 'selected' : '' }}>Manager</option>
+                <option value="staff" {{ request('filter_role') == 'staff' ? 'selected' : '' }}>Staff</option>
+              </select>
+            </form>
+    </div>
+        <div id="user-data-container">
+            <h3 class="text-muted">Danh sách công việc</h3>
+        <table class="datatables-User-list-list table-user table "> 
+            <thead>
+                <tr>
+                    <th class="text-lg-center" >Tên công việc</th>
+                    <th class="text-lg-center">Người thực hiện</th>
+                    <th class="text-lg-center">Tiến độ thực tế</th>
+                    <th class="text-lg-center">Ngày kết thúc</th>
+                    <th class="text-nowrap text-sm-end">Trạng thái</th>
+                    <th class="text-lg-center">Trạng thái</th>
+                    <th class="text-lg-center">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+            
+            </tbody>
+        </table>
+    </div>
+ </div>
     <div class="min-h-screen bg-[#F8F9FA] dark:bg-[#0a0a0a]">
     <div class="container mx-auto px-4 py-6">
         

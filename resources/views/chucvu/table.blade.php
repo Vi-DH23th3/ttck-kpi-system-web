@@ -3,7 +3,7 @@
         <thead>
             <tr>
                 <th class="text-lg-center">Tên chức vụ</th>
-                <th class="text-lg-center">Actions</th>
+                <th class="text-lg-center">Thao tác</th>
             </tr>
         </thead>
         <tbody>

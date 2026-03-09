@@ -8,7 +8,7 @@
                 </li>
                 <li class="nav-item dropdown nav-admin">
                     <a class="nav-link dropdown-toggle text-muted py-2" href="#" id="dropQlUser" role="button" data-bs-toggle="dropdown">
-                        <i class="bi bi-people-fill me-1"></i>Quản lý người dùng
+                        <i class="bi bi-people-fill me-1"></i>Quản lý Nhân sự
                     </a>
                     <ul class="dropdown-menu border-0 shadow" aria-labelledby="dropQlUser">
                         <li><a class="nav-link text-muted py-2 dropdown-item" href="{{ route('donvi.index') }}" id="dropDonVi">
@@ -47,25 +47,39 @@
                     </a>
                 </li> -->
 
-                <li class="nav-item">
+                <!-- <li class="nav-item">
                     <a class="nav-link text-muted py-2" href="#">
                         <i class="bi bi-journal-text me-1"></i> Thư viện KPI
                     </a>
-                </li>
+                </li> -->
 
                 <li class="nav-item dropdown nav-admin">
                     <a class="nav-link dropdown-toggle text-muted py-2" href="#" id="dropQlCV" role="button" data-bs-toggle="dropdown">
-                        <i class="bi bi-briefcase-fill me-1"></i> Quản lý công việc
+                        <i class="bi bi-briefcase-fill me-1"></i> Thiết lập KPI
                     </a>
                     <ul class="dropdown-menu border-0 shadow" aria-labelledby="dropQlCV">
-                         <li><a class="dropdown-item" href="{{route('qlcongviec.index')}}"><i class="bi bi-hourglass-split me-1"></i> Tiến độ công việc</a></li>
-                        <li><a class="dropdown-item" href="#"><i class="bi bi-plus-square me-1"></i> Giao việc</a></li>
-                        <li><a class="dropdown-item" href="#"><i class="bi bi-file-earmark-arrow-up me-1"></i> Nộp báo cáo</a></li>
-                        <li><a class="dropdown-item" href="#"><i class="bi bi-check-all me-1"></i> Phê duyệt</a></li>
+                        <li><a class="dropdown-item" href="{{route('dmcongviec.index')}}"><i class="bi bi-tags me-1"></i> Danh mục nhóm</a></li>
+                        <li><a class="dropdown-item" href="{{route('qlcongviec.thuvienkpi')}}"><i class="bi bi-book me-1"></i> Thư viện KPI mẫu</a></li>
                     </ul>
                 </li>
 
                 <li class="nav-item dropdown nav-admin">
+                    <a class="nav-link dropdown-toggle text-muted py-2" href="#" id="dropOps" data-bs-toggle="dropdown">
+                        <i class="bi bi-briefcase-fill me-1"></i> Vận hành
+                    </a>
+                    <ul class="dropdown-menu border-0 shadow">
+                        <li><a class="dropdown-item" href="{{route('qlcongviec.giaochitieu')}}"><i class="bi bi-plus-square me-1"></i> Giao chỉ tiêu</a></li>
+                        <li><a class="dropdown-item" href="{{route('qlcongviec.index')}}"><i class="bi bi-hourglass-split me-1"></i> Theo dõi tiến độ</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="bi bi-check-all me-1"></i> Phê duyệt & Chấm điểm</a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link text-muted fw-bold py-2" href="{{route('profile.index',Auth::user()->id)}}">
+                        <i class="bi bi-clipboard-data me-1"></i> Việc của tôi
+                    </a>
+                </li>
+                <!-- <li class="nav-item dropdown nav-admin">
                     <a class="nav-link dropdown-toggle text-muted py-2" href="#" id="dropNamHoc" role="button" data-bs-toggle="dropdown">
                         <i class="bi bi-calendar-event me-1"></i> Năm học
                     </a>
@@ -73,7 +87,7 @@
                         <li><a class="dropdown-item" href="#">2023-2024</a></li>
                         <li><a class="dropdown-item" href="#">2024-2025</a></li>
                     </ul>
-                </li>
+                </li> -->
             </ul>
         </div>
     </div>

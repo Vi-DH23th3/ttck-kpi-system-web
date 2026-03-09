@@ -2,6 +2,7 @@
 namespace App\Imports;
 
 use App\Http\Requests\UserRequest;
+use App\Models\ChucVu;
 use App\Models\User;
 use App\Models\DonVi;
 use Maatwebsite\Excel\Concerns\Importable;
@@ -30,27 +31,33 @@ class UsersImport implements ToModel, WithHeadingRow , WithValidation, SkipsOnFa
                 $donViId = $donVi->id;
             }
         }
-
-        $chucvuRaw = trim($row['chuc_vu'] ?? '');
-        
-        // Dùng mb_strtolower để so sánh không phân biệt hoa thường 
-        $chucvuLower = mb_strtolower($chucvuRaw);
-
-        if($chucvuLower == 'giám đốc') {
-            $chucvu = 'GD';
-        } elseif($chucvuLower == 'trưởng phòng') {
-            $chucvu = 'TP';
-        } elseif($chucvuLower == 'phó trưởng phòng') {
-            $chucvu = 'PTP';
-        } else {
-            $chucvu = 'NV';
+        $chucVuId = null;
+        if (isset($row['chuc_vu'])) {
+            $chucvu = ChucVu::where('ten_chuc_vu', $row['chuc_vu'])->first();
+            if ($chucvu) {
+                $chucVuId = $chucvu->id;
+            }
         }
+        // $chucvuRaw = trim($row['chuc_vu'] ?? '');
+        
+        // // Dùng mb_strtolower để so sánh không phân biệt hoa thường 
+        // $chucvuLower = mb_strtolower($chucvuRaw);
+
+        // if($chucvuLower == 'giám đốc') {
+        //     $chucvu = 'GD';
+        // } elseif($chucvuLower == 'trưởng phòng') {
+        //     $chucvu = 'TP';
+        // } elseif($chucvuLower == 'phó trưởng phòng') {
+        //     $chucvu = 'PTP';
+        // } else {
+        //     $chucvu = 'NV';
+        // }
         
       // dd($row, $chucvu, $donViId);
         return new User([
             'name'      => $row['name'],      
             'email'     => $row['email'],     
-            'chucvu'    => $chucvu,
+            'chuc_vu_id'=> $chucVuId,
             'don_vi_id' => $donViId,
             'role'      => $row['role'],      
             'password'  => bcrypt('123'),

@@ -8,7 +8,7 @@
                 <th class="text-nowrap text-sm-end">Phòng ban &nbsp;</th>
                 <th class="text-nowrap text-sm-end">Quyền</th>
                 <th class="text-lg-center">Trạng thái</th>
-                <th class="text-lg-center">Actions</th>
+                <th class="text-lg-center">Thao tác</th>
             </tr>
         </thead>
         <tbody>

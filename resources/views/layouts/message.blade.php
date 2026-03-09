@@ -45,5 +45,17 @@
       });
     </script>
     @endif
+     @if(session('error'))
+      <script>
+      Swal.fire({
+          icon: "error",
+          title: "Thất bại",
+          text: "{{ session('error') }}",
+          showConfirmButton: true,      // Bỏ nút OK
+          // timer: 3000,                   // Tự đóng sau 3 giây
+          // timerProgressBar: true
+      });
+    </script>
+    @endif
 </script>
 
