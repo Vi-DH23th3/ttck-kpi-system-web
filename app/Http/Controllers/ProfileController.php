@@ -19,7 +19,7 @@ class ProfileController extends Controller
     {
         $dscongviec = PhanCongCongViec::with(['thuVienKPI', 'nguoiGiao'])
                         ->where('user_id', Auth::id())
-                        ->orderBy('created_at', 'desc')
+                        ->orderBy('ngay_bat_dau', 'desc')
                         ->get();
         $user = $request->user();
         return view('profile.index', compact('dscongviec', 'user'));
@@ -52,11 +52,11 @@ class ProfileController extends Controller
             $user->avatar = $path;
         }
         
-        if ($user->isDirty('email')) {
-            $user->email_verified_at = null; 
-            //Nếu người dùng thay đổi Email, hệ thống sẽ hủy trạng thái "Đã xác thực" của họ. 
-            //Điều này buộc họ phải xác nhận lại qua Email mới (nếu hệ thống của bạn có bật tính năng xác thực email).
-        }
+        // if ($user->isDirty('email')) {
+        //     $user->email_verified_at = null; 
+        //     //Nếu người dùng thay đổi Email, hệ thống sẽ hủy trạng thái "Đã xác thực" của họ. 
+        //     //Điều này buộc họ phải xác nhận lại qua Email mới (nếu hệ thống của bạn có bật tính năng xác thực email).
+        // }
         
         $user->save();
 

@@ -13,9 +13,7 @@
                         <label for="" >Mật khẩu</label>
                         <input class="form-control mb-3 w-100 mx-auto" id="password" type="password" name="password" required>
                     <div class="remember-forgot d-flex justify-content-between mb-3">
-                        <label><input type="checkbox" name="remember" > Ghi nhớ đăng nhập</label>
-                        <a href="{{route('register')}}" class="text-muted">Chưa có tài khoản? Đăng ký</a>
-                        @if (Route::has('password.request'))
+                        <label><input type="checkbox" name="remember" > Ghi nhớ đăng nhập</label>                        @if (Route::has('password.request'))
                             <a href="{{ route('password.request') }}">Quên mật khẩu?</a>
                         @endif
                     </div>

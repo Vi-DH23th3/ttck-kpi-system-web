@@ -36,7 +36,7 @@
         <!-- Submit and reset -->
         <div class="mb-3">
           <button type="submit" class="btn btn-primary me-sm-3 me-1 add-submit">Thêm</button>
-          <button type="reset" class="btn bg-danger text-white" data-bs-dismiss="offcanvas">Discard</button>
+          <button type="reset" class="btn bg-danger text-white" data-bs-dismiss="offcanvas">Hủy</button>
         </div>
       </form>
     </div>
@@ -60,7 +60,7 @@
         <!-- Submit and reset -->
         <div class="mb-3">
           <button type="submit" class="btn btn-primary me-sm-3 me-1 data-submit edit-submit">Cập nhật</button>
-          <button type="reset" class="btn bg-danger text-white" data-bs-dismiss="offcanvas">Discard</button>
+          <button type="reset" class="btn bg-danger text-white" data-bs-dismiss="offcanvas">Hủy</button>
         </div>
       </form>
     </div>

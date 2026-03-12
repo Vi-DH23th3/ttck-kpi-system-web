@@ -177,7 +177,7 @@
             <!-- Submit and reset -->
             <div class="mb-3">
               <button type="submit" class="btn btn-primary me-sm-3 me-1 add-submit">Thêm</button>
-              <button type="reset" class="btn bg-danger text-white" data-bs-dismiss="offcanvas">Discard</button>
+              <button type="reset" class="btn bg-danger text-white" data-bs-dismiss="offcanvas">Hủy</button>
             </div>
           </form>
         </div>
@@ -206,14 +206,6 @@
             <div class="mb-3">
               <label class="form-label text-muted" for="ecommerce-User-list-image">Chức vụ</label>
               <select name="chuc_vu" id="chuc_vu" class="form-select edit-chucvu">
-                <!-- <option class="" value="">Chọn chức vụ</option> -->
-                <!-- @foreach($dschucvu as $cv)
-                <option value="{{$cv->id}}" class="menu_chucvu">{{$cv->ten_chuc_vu}}</option>
-                @endforeach -->
-                <!-- <option class="GD" value="GD">Giám đốc</option>
-                <option class="TP" value="TP">Trưởng phòng</option>
-                <option class="PTP" value="PTP">Phó trưởng phòng</option>
-                <option class="NV" value="NV">Nhân viên</option> -->
               </select>
             </div>
             <!-- Danh sách đơn vị -->
@@ -245,7 +237,7 @@
             <!-- Submit and reset -->
             <div class="mb-3">
               <button type="submit" class="btn btn-primary me-sm-3 me-1 data-submit edit-submit">Cập nhật</button>
-              <button type="reset" class="btn bg-danger text-white" data-bs-dismiss="offcanvas">Discard</button>
+              <button type="reset" class="btn bg-danger text-white" data-bs-dismiss="offcanvas">Hủy</button>
             </div>
           </form>
         </div>

@@ -58,6 +58,7 @@
                         <i class="bi bi-briefcase-fill me-1"></i> Thiết lập KPI
                     </a>
                     <ul class="dropdown-menu border-0 shadow" aria-labelledby="dropQlCV">
+                        
                         <li><a class="dropdown-item" href="{{route('dmcongviec.index')}}"><i class="bi bi-tags me-1"></i> Danh mục nhóm</a></li>
                         <li><a class="dropdown-item" href="{{route('qlcongviec.thuvienkpi')}}"><i class="bi bi-book me-1"></i> Thư viện KPI mẫu</a></li>
                     </ul>
@@ -68,14 +69,18 @@
                         <i class="bi bi-briefcase-fill me-1"></i> Vận hành
                     </a>
                     <ul class="dropdown-menu border-0 shadow">
-                        <li><a class="dropdown-item" href="{{route('qlcongviec.giaochitieu')}}"><i class="bi bi-plus-square me-1"></i> Giao chỉ tiêu</a></li>
-                        <li><a class="dropdown-item" href="{{route('qlcongviec.index')}}"><i class="bi bi-hourglass-split me-1"></i> Theo dõi tiến độ</a></li>
-                        <li><a class="dropdown-item" href="#"><i class="bi bi-check-all me-1"></i> Phê duyệt & Chấm điểm</a></li>
+                        <li class="nav-item dropdown nav-admin"><a href="" class="dropdown-item" id="dropOps" data-bs-toggle="dropdown"><i class="bi bi-plus-square me-1"></i> Giao chỉ tiêu</a>
+                            <ul class="dropdown-menu border-0 shadow" aria-labelledby="dropOps">
+                                <li><a class="dropdown-item" href="{{route('qlcongviec.giaochitieu')}}"><i class="bi bi-plus-square me-1"></i> Giao chỉ tiêu(thủ công)</a></li>
+                                <li><a class="dropdown-item" href="{{route('qlcongviec.giaokpiimport.index')}}"><i class="bi bi-plus-square me-1"></i> Giao chỉ tiêu(file)</a></li>
+                            </ul>
+                        </li>
+                        <li><a class="dropdown-item" href="{{route('qlcongviec.index')}}"><i class="bi bi-check-all me-1"></i> Quản lý tiến độ & Phê duyệt</a></li>
                     </ul>
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link text-muted fw-bold py-2" href="{{route('profile.index',Auth::user()->id)}}">
+                    <a class="nav-link text-muted py-2" href="{{route('profile.index',Auth::user()->id)}}">
                         <i class="bi bi-clipboard-data me-1"></i> Việc của tôi
                     </a>
                 </li>

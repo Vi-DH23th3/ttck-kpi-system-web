@@ -43,7 +43,7 @@
                     <h5 class="py-3 breadcrumb-wrapper mb-4">
                     <span class="text-muted"></span> 
                     </h5>
-                    <table class="datatables-User-list-list table-user table "> 
+                    <table class="datatables-User-list-list table-user table table-hover"> 
                         <thead>
                             <tr>
                                 <th class="text-lg-center">Tên công việc</th>

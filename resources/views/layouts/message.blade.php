@@ -1,3 +1,6 @@
+<!-- return về view thì Laravel sẽ render trực tiếp nội dung file Blade đó ra. 
+ Lúc này, phương thức ->with('success', ...) sẽ đẩy biến success vào View Data 
+ Dùng return redirect()->...->with('success', ...). Lúc này thông báo được lưu vào Session-->
       @if (session('info'))
   <script>
     Swal.fire({
@@ -33,7 +36,7 @@
       });
     </script>
   @endif
-    @if(session('success'))
+    @if(session('success') || isset($success))
       <script>
       Swal.fire({
           icon: "success",
@@ -54,6 +57,7 @@
           showConfirmButton: true,      // Bỏ nút OK
           // timer: 3000,                   // Tự đóng sau 3 giây
           // timerProgressBar: true
+          //position: 'top-end'
       });
     </script>
     @endif

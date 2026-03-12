@@ -11,7 +11,7 @@ use Maatwebsite\Excel\Concerns\SkipsEmptyRows;
 use Maatwebsite\Excel\Validators\Failure;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithValidation;
-use Maatwebsite\Excel\Concerns\WithHeadingRow; // PHẢI CÓ DÒNG NÀY
+use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
 // PHẢI thêm WithHeadingRow ở đây nữa
 class UsersImport implements ToModel, WithHeadingRow , WithValidation, SkipsOnFailure, SkipsEmptyRows

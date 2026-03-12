@@ -1,5 +1,5 @@
 <div id="user-data-container">
-    <table class="datatables-User-list-list table-user table "> 
+    <table class="datatables-User-list-list table-user table table-hover"> 
         <thead>
             <tr>
                 <th class="text-lg-center">Tên phòng ban</th>

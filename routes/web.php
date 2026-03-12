@@ -7,6 +7,7 @@ use App\Http\Controllers\DonViController;
 use App\Http\Controllers\ChucVuController;
 use App\Http\Controllers\QlCongViecController;
 use App\Http\Controllers\DMCongViecController;
+use App\Http\Controllers\BaoCaoCongViecController;
 use App\Models\DanhMucCongViec;
 
 // Route::get('/', function () {
@@ -37,8 +38,13 @@ Route::middleware('auth')->group(function () {
     // Route::get('/qlcongviec/dmcongviec/{id}/edit', [QlCongViecController::class, 'edit'])->name('qlcongviec.dmcongviec.edit');
     Route::get('/giaochitieu', [QlCongViecController::class, 'giaoChiTieu'])->name('qlcongviec.giaochitieu');
     Route::post('/giaochitieu', [QlCongViecController::class, 'xuLyGiaoViec'])->name('qlcongviec.giaokpi');
+    Route::get('/giaokpiimport', [QlCongViecController::class, 'giaoKPIImport'])->name('qlcongviec.giaokpiimport.index');
+    Route::post('/giaokpiimport', [QlCongViecController::class, 'xuLyGiaoKPIImport'])->name('qlcongviec.giaokpiimport');
+    Route::post('/storegiaokpiimport', [QlCongViecController::class, 'storeGiaoChiTieuImport'])->name('qlcongviec.giaokpiimport.store');
     Route::get('/qlcongviec/thuvienkpi', [QlCongViecController::class, 'thuvienkpi'])->name('qlcongviec.thuvienkpi');
     Route::post('/qlcongviec/thuvienkpi', [QlCongViecController::class, 'themThuVienKPI'])->name('qlcongviec.thuvienkpi.create');
+
+    Route::post('/profile/storebaocao', [BaoCaoCongViecController::class, 'storeBaoCao'])->name('profile.storebaocao');
 });
 
 require __DIR__.'/auth.php';
