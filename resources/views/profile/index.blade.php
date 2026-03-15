@@ -1,111 +1,230 @@
 @extends('layouts.app')
-@section('title', 'Trang cá nhân')
+@section('title', 'Bảng điều khiển cá nhân')
 @section('content')
-    <div class="container mt-5">
-        <div class="d-flex justify-content-between align-items-center mb-4 bg-white shadow-sm p-4 rounded-2 border gap-2">
-            
-            <div class="d-flex align-items-center">
-                <div class="position-relative">
-                    <img src="{{asset('storage/' . Auth::user()->avatar)}}" class="rounded-circle me-3" alt="Avatar" style="width: 80px; height: 80px; object-fit: cover;">
+<div class="container mt-4">
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body p-4">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                <div class="d-flex align-items-center">
+                    <div class="position-relative">
+                        <img src="{{ asset('storage/' . Auth::user()->avatar) }}" 
+                             class="rounded-circle border border-3 border-primary p-1" 
+                             alt="Avatar" style="width: 90px; height: 90px; object-fit: cover;">
+                        <span class="position-absolute bottom-0 end-0 badge rounded-pill bg-success border border-white p-2">
+                            <span class="visually-hidden">Online</span>
+                        </span>
+                    </div>
+                    <div class="ms-4">
+                        <h4 class="fw-bold mb-1 text-dark">{{ Auth::user()->name }}</h4>
+                        <p class="text-muted mb-0"><i class="bi bi-envelope me-1"></i> {{ Auth::user()->email }}</p>
+                        <span class="badge bg-soft-primary text-primary mt-2">
+                            {{ Auth::user()->chuc_vu == 'GD' ? 'Giám đốc' : (Auth::user()->chuc_vu == 'TP' ? 'Trưởng phòng' : 'Nhân viên') }}
+                        </span>
+                    </div>
                 </div>
-                <div>
-                    <h5 class="fw-bold mb-0">{{Auth::user()->name}}</h5>
-                    <p class="text-muted mb-0">{{Auth::user()->email}}</p>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-outline-primary btn-edit" type="button">
+                        <i class="bi bi-pencil-square me-1"></i> Chỉnh sửa hồ sơ
+                    </button>
+                    <form action="{{route('password.change')}}" method="GET">
+                        @csrf
+                        <button class="btn btn-primary" type="submit">
+                            <i class="bi bi-shield-lock me-1"></i> Đổi mật khẩu
+                        </button>
+                    </form>
                 </div>
             </div>
-            <button class="btn btn-primary px-4 btn-edit" style="border-radius: 10px;" type="button">Edit</button>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-4 col-md-5">
+            <div class="sticky-top" style="top: 85px; z-index: 10;">
+                <div class="card border-0 shadow-sm mb-4 rounded-3">
+                    <div class="card-body p-4">
+                        <div class="profile-info">
+                            <h6 class="fw-bold text-uppercase small text-primary mb-3">Thông tin chi tiết</h6>
+                            <div class="mb-3 d-flex justify-content-between">
+                                <span class="text-muted small"><i class="bi bi-building me-2"></i>Phòng ban:</span>
+                                <span class="fw-semibold small">{{ Auth::user()->donVi->ten_don_vi }}</span>
+                            </div>
+                            <div class="mb-3 d-flex justify-content-between">
+                                <span class="text-muted small"><i class="bi bi-calendar-check me-2"></i>Ngày tham gia:</span>
+                                <span class="fw-semibold small">{{ Auth::user()->created_at->format('d/m/Y') }}</span>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <span class="text-muted small"><i class="bi bi-info-circle me-2"></i>Trạng thái:</span>
+                                <span class="badge {{ Auth::user()->trang_thai == 1 ? 'bg-success' : 'bg-danger' }} rounded-pill" style="font-size: 10px;">
+                                    {{ Auth::user()->trang_thai == 1 ? 'Hoạt động' : 'Khóa' }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="edit-profile d-none mt-3">
+                            <h6 class="fw-bold text-uppercase small text-primary mb-3">Cập nhật thông tin</h6>
+                            <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data">
+                                @csrf @method('PUT')
+                                <div class="mb-2">
+                                    <label class="small fw-bold">Thay ảnh đại diện</label>
+                                    <input type="file" class="form-control form-control-sm" name="avatar">
+                                </div>
+                                <div class="mb-2">
+                                    <input type="text" class="form-control form-control-sm" value="{{ Auth::user()->name }}" name="name" placeholder="Họ tên">
+                                </div>
+                                <div class="mb-3">
+                                    <input type="email" class="form-control form-control-sm" value="{{ Auth::user()->email }}" name="email" placeholder="Email">
+                                </div>
+                                <button type="submit" class="btn btn-sm btn-primary w-100">Lưu thay đổi</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card border-0 shadow-sm rounded-3 bg-primary text-white">
+                    <div class="card-body p-4 text-center">
+                        <h6 class="text-uppercase small opacity-75 mb-3">Hiệu suất tháng này</h6>
+                        <div class="display-5 fw-bold mb-1">{{ $tongdatduoc / $tongchitieu * 100 }}%</div>
+                        <p class="small mb-3">Đã hoàn thành {{ $tongdatduoc }}/{{ $tongchitieu }} chỉ tiêu</p>
+                        <div class="progress bg-white bg-opacity-25" style="height: 6px;">
+                            <div class="progress-bar bg-white" style="width: {{ $tongdatduoc / $tongchitieu * 100 }}%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div class="row g-4">
-            <div class="col-md-4 bg">
-                <div class="p-3 border bg-light shadow-sm p-4 rounded-2 sticky-top" style="top:70px; z-index: 1000;">
-                        <div class="profile">
-                            <label class="form-label fw-semibold">Thông tin cá nhân</label>
-                            <p class="text-muted" ><i class="bi bi-person-fill"></i> Họ tên: <strong>{{Auth::user()->name}}</strong></p>
-                            <p class="text-muted" ><i class="bi bi-briefcase-fill"></i> Chức vụ: <strong>{{Auth::user()->chuc_vu == 'GD' ? 'Giám đốc' : 
-                                    (Auth::user()->chuc_vu == 'TP' ? 'Trưởng phòng' : 
-                                    (Auth::user()->chuc_vu == 'PTP' ? 'Phó trưởng phòng' : 'Nhân viên'))}}</strong></p>
-                            <p class="text-muted" ><i class="bi bi-building-gear"></i> Phòng ban: <strong>{{Auth::user()->donVi->ten_don_vi}}</strong></p>
-                            <p class="text-muted" ><i class="bi bi-envelope-at-fill"></i> Email: <strong>{{Auth::user()->email}}</strong></p>
-                            <p class="text-muted" ><i class="bi bi-check-circle-fill"></i> Trạng thái: <strong>{{Auth::user()->trang_thai == '1' ? 'Hoạt động' : 'Bị khóa'}}</strong></p>
-                        </div> 
-                        <!-- Form sửa thông tin cá nhân -->
-                        <div class="edit-profile d-none">
-                            <label class="form-label fw-semibold">Sửa thông tin cá nhân</label>
-                            <form action="{{ route('profile.update') }}" method="POST" class="form-control w-100"  enctype="multipart/form-data">
-                                @csrf
-                                @method('PUT')
-                                <label for="">Avatar</label>
-                                <input type="file" class="form-control mb-3" name="avatar">
-                                <input class="text-muted form-control mb-3" type="text" value="{{Auth::user()->name}}" name="name">
-                                <input class="text-muted form-control mb-3" type="text" value="{{Auth::user()->email}}" name="email">
-                                <button tyle="submit" class="btn btn-primary">Cập nhật</button>
-                            </form> 
-                        </div> 
-                        @if ($errors->any())
-                            <div class="alert alert-danger">
-                                <ul>
-                                    @foreach ($errors->all() as $error)
-                                        <li>{{ $error }}</li>
-                                    @endforeach
-                                </ul>
+        <div class="col-lg-8 col-md-7">
+            <div class="card border-0 shadow-sm rounded-3">
+                <div class="card-header bg-white border-0 p-4 pb-0">
+                    <ul class="nav nav-tabs nav-tabs-bordered" id="profileTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active fw-bold py-3" data-bs-toggle="tab" data-bs-target="#tasks">
+                                <i class="bi bi-list-task me-1"></i> Việc cần làm
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link fw-bold py-3" data-bs-toggle="tab" data-bs-target="#history">
+                                <i class="bi bi-clock-history me-1"></i> Lịch sử báo cáo
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-body p-4">
+                    <div class="tab-content pt-2">
+                        <div class="tab-pane fade show active" id="tasks">
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle">
+                                    <thead class="small text-muted table-light">
+                                        <tr>
+                                            <th>Nội dung KPI</th>
+                                            <th>Tiến độ</th>
+                                            <th class="text-center">Mức độ ưu tiên</th>
+                                            <th class="text-center">Thao tác</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($dscongviec as $cv)
+                                        <tr>
+                                            <td style="max-width: 250px;">
+                                                <div class="fw-bold mb-1 text-truncate">{{ $cv->thuVienKPI->ten_kpi }}</div>
+                                                <small class="text-muted">Chu kỳ: {{ $cv->thuVienKPI->chu_ky }}</small>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="progress w-100 me-2" style="height: 6px;">
+                                                        <div class="progress-bar bg-success" style="width: {{ ($cv->thuc_te_dat_duoc / $cv->thuVienKPI->chi_tieu) * 100 }}%"></div>
+                                                    </div>
+                                                    <small class="fw-bold">{{ $cv->thuc_te_dat_duoc }}/{{ $cv->thuVienKPI->chi_tieu }}</small>
+                                                </div>
+                                            </td>
+                                            <td class="text-center">
+                                                @if($cv->muc_do_uu_tien == '1')
+                                                    <span class="badge bg-danger">Cao</span>
+                                                @elseif($cv->muc_do_uu_tien == '2')
+                                                    <span class="badge bg-warning">Trung bình</span>
+                                                @else
+                                                    <span class="badge bg-success">Thấp</span>
+                                                @endif
+                                            </td>
+                                            <td class="text-center">
+                                                @if($cv->baoCaoCongViec->where('trangthai_duyet', 'tra_lai')->count() > 0)
+                                                <button class="btn btn-sm btn-light border btn-nop-bao-cao" 
+                                                        data-id="{{ $cv->id }}" 
+                                                        data-ten="{{ $cv->thuVienKPI->ten_kpi }}">
+                                                    Báo cáo lại
+                                                </button>
+                                                @elseif($cv->thuc_te_dat_duoc == $cv->thuVienKPI->chi_tieu)
+                                                    <span class="text-success small">Đã hoàn thành</span>
+                                                @else
+                                                <button class="btn btn-sm btn-light border btn-nop-bao-cao" 
+                                                        data-id="{{ $cv->id }}" 
+                                                        data-ten="{{ $cv->thuVienKPI->ten_kpi }}">
+                                                    Nộp báo cáo
+                                                </button>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
                             </div>
-                        @endif
-                </div>         
-            </div>
-            <div class="col-md-8">
-                <!-- <a class="form-label fw-semibold" href="">Danh sách công việc</a> -->
-                <div class="p-3 border bg-light shadow-sm p-4 rounded-2">
-                <h5 class="card-header fw-semibold">Danh sách công việc</h5>
-                <div class="table-responsive mb-3 fw-semibold">
-                    <table class="table datatable-project">
-                    <thead class="table-light">
-                        <tr>
-                            
-                            <th>Nội dung công việc</th>
-                            <th>Chỉ tiêu</th>
-                            <th>Đơn vị</th>
-                            <th>Chu kỳ</th>
-                            <th>Người giao</th>
-                            <th>Trạng thái</th>
-                            <th>Nộp báo cáo</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($dscongviec as $cv)
-                        <tr>
-                           
-                            <td>{{ $cv->thuVienKPI->ten_kpi }}</td>
-                            <td>{{ $cv->thuVienKPI->chi_tieu }}</td>
-                            <td>{{ $cv->thuVienKPI->don_vi }}</td>
-                            <td>{{ $cv->thuVienKPI->chu_ky }}</td>
-                            <td>{{ $cv->nguoiGiao->name }}</td>
-                            <td>
-                                <span class="badge bg-warning text-dark">{{ $cv->trang_thai == 'chua_bat_dau' ? 'Chờ thực hiện' : 
-                                    ($cv->trang_thai == 'dang_thuc_hien' ? 'Đang thực hiện' : 
-                                    ($cv->trang_thai == 'da_hoan_thanh' ? 'Đã hoàn thành' : 'Đã hủy')) }}</span>
-                            </td>
-                            <td><button type="button" class="btn btn-sm btn-primary btn-nop-bao-cao" 
-                                    data-id="{{ $cv->id }}" 
-                                    data-ten="{{ $cv->thuVienKPI->ten_kpi }}" 
-                                    data-chitieu="{{ $cv->thuVienKPI->chi_tieu }} {{ $cv->thuVienKPI->don_vi }}"
-                                >
-                                    <i class="bi bi-send-fill"></i> Nộp báo cáo
-                                </button>
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                    </table>
-                </div>
-                </div>
-                
-                <!--/ Projects table -->
-            </div>
-            </div>
-        </div>                                 
-</div>
+                        </div>
 
+                        <div class="tab-pane fade" id="history">
+                            @if($baoCao)
+                                <table class="table table-hover align-middle">
+                                    <thead class="small text-muted table-light">
+                                        <tr>
+                                            <th>Nội dung KPI</th>
+                                            <th>Ngày thực hiện</th>
+                                            <th>Người duyệt</th>
+                                            <th>Ghi chú</th>
+                                            <th>Trạng thái duyệt</th>
+                                            <!-- <th class="text-center">Thao tác</th> -->
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($baoCao as $bc)
+                                        <tr>
+                                            <td style="max-width: 250px;">
+                                                <div class="fw-bold mb-1 text-truncate">{{ $bc->phanCong->thuVienKPI->ten_kpi }}</div>
+                                                <small class="text-muted">Chu kỳ: {{ $bc->phanCong->thuVienKPI->chu_ky }}</small>
+                                            </td>
+                                            <td>
+                                                {{ $bc->created_at->format('d/m/Y') }}
+                                            </td>
+                                            <td class="text-center">
+                                                {{ $bc->userDuyet->name ?? 'Chưa có người duyệt'}}
+                                            </td>
+                                            <td>
+                                                {{ $bc->ghi_chu }}
+                                            </td>
+                                            <td>
+                                                @if($bc->trangthai_duyet == 'chua_duyet')
+                                                    <span class="text-danger">Chưa được duyệt</span>
+                                                @elseif($bc->trangthai_duyet == 'da_duyet')
+                                                    <span class="text-success">Đã được duyệt</span>
+                                                @else
+                                                    <span class="text-warning">Đã bị trả lại</span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            @else
+                            <div class="text-center py-5">
+                                <i class="bi bi-folder2-open display-4 text-muted"></i>
+                                <p class="mt-2 text-muted">Danh sách các báo cáo đã nộp sẽ hiện ở đây.</p>
+                            </div>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="modal fade" id="modalNopBaoCao" tabindex="-1" aria-labelledby="modalNopBaoCaoLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
@@ -142,10 +261,10 @@
                                 <option value="da_chinh_sua">Đã chỉnh sửa</option>
                             </select>
                         </div>
-                        <!-- <div class="col-12">
+                        <div class="col-12">
                             <label class="form-label fw-bold">Nội dung giải trình / Minh chứng</label>
-                            <textarea name="noi_dung" class="form-control" rows="3" placeholder="Mô tả chi tiết công việc đã làm..."></textarea>
-                        </div> -->
+                            <textarea name="ghi_chu" class="form-control" rows="3" placeholder="Mô tả chi tiết công việc đã làm..."></textarea>
+                        </div>
 
                         <div class="col-12">
                             <label class="form-label fw-bold">Tài liệu đính kèm (nếu có)</label>
@@ -162,22 +281,30 @@
         </div>
     </div>
 </div>
+
+@push('script')
 <script>
-    let profile =document.querySelector('.profile');
+    let profile =document.querySelector('.profile-info');
     let edit_profile = document.querySelector('.edit-profile');
     let btnEdit = document.querySelector('.btn-edit');
 
     btnEdit.addEventListener('click', function() {
+        // const isEditing = !edit_profile.classList.contains('d-none');
         if (edit_profile.classList.contains('d-none')) {
             profile.classList.add('d-none');
             edit_profile.classList.remove('d-none');
-        }else{
+            this.innerHTML = '<i class="bi bi-x-circle me-1"></i> Hủy sửa';
+            this.classList.replace('btn-outline-primary', 'btn-outline-danger');
+        } else {
             profile.classList.remove('d-none');
             edit_profile.classList.add('d-none');
-        }
-    });
+        this.innerHTML = '<i class="bi bi-pencil-square me-1"></i> Chỉnh sửa hồ sơ';
+        this.classList.replace('btn-outline-danger', 'btn-outline-primary');
+    }
+});
 </script>
-@push('script')
+
 <script src="{{ asset('js/congvieccanhan.js') }}"></script>
 @endpush
+
 @endsection

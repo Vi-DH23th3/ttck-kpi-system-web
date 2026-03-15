@@ -16,14 +16,25 @@
                         <li class="nav-item dropdown ">
                             <button type="button" class="btn position-relative " data-bs-toggle="dropdown">
                                 <i class="bi bi-bell-fill fs-4 text-white"></i>
-                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="margin-left: -5px; margin-bottom: -5px;">5</span>
+                                @if(Auth::user()->unreadNotifications->count() > 0)
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="margin-left: -5px; margin-bottom: -5px;">{{ Auth::user()->unreadNotifications->count()}}</span>
+                                @endif
                             </button>
                              <ul class="dropdown-menu dropdown-menu-end border-0 shadow " aria-labelledby="dropDonVi" style="min-width: 300px;">
                                 <li class="px-3 py-2 border-bottom dropdown-item">
                                     <span class="fw-bold">Thông báo</span>
                                 </li>
-                                
-                                <li class="dropdown-item">
+                                @forelse(Auth::user()->unreadNotifications as $notification)
+                                    <li class="dropdown-item">
+                                        <a class="dropdown-item p-3" href="{{ $notification->data['link'] }}">
+                                            <small class="fw-bold d-block">{{ $notification->data['title'] }}</small>
+                                            <small class="text-muted">{{ $notification->data['message'] }}</small>
+                                        </a>
+                                    </li>
+                                @empty
+                                    <li class="p-4 text-center text-muted">Không có thông báo mới</li>
+                                @endforelse
+                                <!-- <li class="dropdown-item">
                                     <a class="dropdown-item py-3 border-bottom" href="#">
                                         <div class="d-flex align-items-center">
                                             <div class="bg-primary text-white rounded-circle p-2 me-3">
@@ -41,7 +52,7 @@
                                     <a class="dropdown-item py-3 text-center text-primary fw-bold" href="#">
                                         Xem tất cả
                                     </a>
-                                </li>
+                                </li> -->
                             </ul>
                         </li>
                     </ul>

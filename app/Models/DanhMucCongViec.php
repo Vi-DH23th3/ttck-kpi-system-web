@@ -16,4 +16,5 @@ class DanhMucCongViec extends Model
     {
         return $this->hasMany(ThuVienKPI::class, 'dm_cv_id');
     }
+    
 }

@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('trang_thai_bao_cao')->default('dang_lam'); //đang làm, đã nộp, đã chỉnh sửa
             $table->string('file_minh_chung')->nullable();
             $table->foreignId('user_duyet_id')->nullable()->constrained('users')->nullOnDelete();
-            $table->string('ghi_chu')->nullable();
+            $table->text('ghi_chu')->nullable();
             $table->string('trangthai_duyet')->default('chua_duyet'); // chua_duyet, da_duyet, tu_choi
             $table->softDeletes();
             $table->timestamps();

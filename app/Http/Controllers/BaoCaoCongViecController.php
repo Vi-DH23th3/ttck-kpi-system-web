@@ -12,8 +12,13 @@ class BaoCaoCongViecController extends Controller
     public function storeBaoCao(Request $request){
         DB::beginTransaction();
         try {
+           // dd($request->all());
             $phan_cong_cong_viec_id = $request->phan_cong_cong_viec_id;
             $path = '';
+            $ghichu = '';
+            if($request->has('ghi_chu')){
+                $ghichu ="\n [Nhân viên " . Auth::user()->name . "]: " . $request->ghi_chu . "\n";
+            }
             $tiendo = $request->tien_do;
             $solanbaocao = 1;
             if($request->hasFile('file_minh_chung')){
@@ -21,26 +26,29 @@ class BaoCaoCongViecController extends Controller
                 $filename = 'baocao_' . $phan_cong_cong_viec_id . '_' . time() . "." . $request->file_minh_chung->getClientOriginalExtension();
                 $path = $file_minh_chung->storeAs('files', $filename, 'public');
             }
-            $phancongid = BaoCaoCongViec::where('phan_cong_id', $phan_cong_cong_viec_id)->latest()->first();
-            if($phancongid){
-                $solanbaocao = $phancongid->so_lan_bao_cao + 1;
-                $tiendo = $phancongid->thuc_te_dat_duoc + $request->tien_do;
-            }
             $phanCong = PhanCongCongViec::find($request->phan_cong_cong_viec_id);
         // dd($request->all());
             if($phanCong->trang_thai == 'chua_bat_dau') {
                 $phanCong->trang_thai = 'dang_thuc_hien';
                 $phanCong->save();
             }
-            BaoCaoCongViec::create([
+           // dd($phanCong);
+            $baocao = BaoCaoCongViec::create([
                 'user_id' => Auth::id(),
                 'phan_cong_id' => $phan_cong_cong_viec_id,
-                'thuc_te_dat_duoc' => $tiendo,
+                'tien_do_thuc' => $tiendo,
                 'file_minh_chung' => $path,
                 'ngay_thuc_hien' => $request->ngay_bao_cao,
                 'trang_thai_bao_cao' => $request->trang_thai_bao_cao,
-                'so_lan_bao_cao' => $solanbaocao,
+                'ghi_chu' =>$ghichu
             ]);
+            $baocaocu = BaoCaoCongViec::where('phan_cong_id', $phan_cong_cong_viec_id)->get();
+            $id_bao_cao = $baocao->id;
+            if($id_bao_cao){
+                $phanCong->so_lan_bao_cao += 1;
+                $phanCong->save();
+            }
+            //dd($id_bao_cao);
             DB::commit();
             return redirect()->back()->with('success', 'Báo cáo đã được lưu thành công!');
         } catch (\Exception $e) {
@@ -48,4 +56,5 @@ class BaoCaoCongViecController extends Controller
             return redirect()->back()->with('error', 'Có lỗi xảy ra khi báo cáo: ' . $e->getMessage());
         }
     }
+    
 }

@@ -5,6 +5,5 @@ $('.btn-nop-bao-cao').click(function(){
     $('#display_ten_kpi').text(ten);
     $('#display_chi_tieu').text(chitieu);
     $('#input_phan_cong_cong_viec_id').val(id);
-    //$('#pccv_id').val(id);
     $('#modalNopBaoCao').modal('show');
 })

@@ -12,17 +12,35 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 use App\Models\PhanCongCongViec;
+use App\Models\BaoCaoCongViec;
+use Carbon\Carbon;
 
 class ProfileController extends Controller
 {
     public function index(Request $request ): View
     {
-        $dscongviec = PhanCongCongViec::with(['thuVienKPI', 'nguoiGiao'])
+        $now = Carbon::now();
+        $tongchitieu = 0;
+        $dscongviec = PhanCongCongViec::with(['thuVienKPI', 'nguoiDuocGiao'])
                         ->where('user_id', Auth::id())
-                        ->orderBy('ngay_bat_dau', 'desc')
+                        // ->orderBy('ngay_bat_dau', 'desc')
+                        ->orderBy('muc_do_uu_tien', 'asc')
                         ->get();
         $user = $request->user();
-        return view('profile.index', compact('dscongviec', 'user'));
+        $congviecthangnay = PhanCongCongViec::with(['thuVienKPI', 'nguoiDuocGiao'])
+                        ->where('user_id', Auth::id())
+                        ->whereMonth('ngay_bat_dau', $now->month)
+                        ->whereYear('ngay_bat_dau', $now->year)
+                        ->orderBy('ngay_bat_dau', 'desc')
+                        ->get();
+        $tongchitieu = $congviecthangnay->sum(function($item) {
+            return $item->thuVienKPI->chi_tieu ?? 0;
+        });
+        $tongdatduoc = $congviecthangnay->sum(function($item) {
+            return $item->thuc_te_dat_duoc ?? 0;
+        });
+        $baoCao = BaoCaoCongViec::where('user_id', Auth::id())->get();
+        return view('profile.index', compact('dscongviec', 'user', 'tongchitieu', 'tongdatduoc', 'baoCao'));
     }
     /**
      * Display the user's profile form.
