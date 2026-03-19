@@ -49,6 +49,7 @@ class UserRequest extends FormRequest
             'chucvu' => 'nullable|string|max:255',
             'role' => 'required|string|in:admin,manager,staff',
             'don_vi_id' => 'nullable|exists:don_vi,id',
+            
         ];
     }
     public function messages()
