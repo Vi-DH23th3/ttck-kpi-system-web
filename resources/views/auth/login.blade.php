@@ -3,7 +3,7 @@
 
 @section('content')
     <div class="container mt-5 bg-white p-4 shadow border rounded w-50 mx-auto">
-        <div class="mb-3 text-center text-dark fs-3">Đăng nhập</div>
+        <div class="mb-3 text-center text-primary fs-3">Đăng nhập</div>
         <div class="content w-75 mx-auto">
             <div class="login-form">
                 <form method="POST" action="{{ route('login') }}">
@@ -28,8 +28,15 @@
                             </div>
                         @endif
                     </div>
-                    <div class="text-end"><button type="submit" class="btn btn-primary" >Đăng nhập</button></div>
+                    <div class="text-end"><button type="submit" class="btn btn-primary w-100" >Đăng nhập</button></div>
                 </form>
+                <hr>
+                <div class="mt-4">
+                    <a href="{{ route('login.google') }}" class="btn btn-outline-dark w-100" style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+                        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google Logo" width="20">
+                        Đăng nhập với Google
+                    </a>
+                </div>
             </div>
         </div>
     </div>
