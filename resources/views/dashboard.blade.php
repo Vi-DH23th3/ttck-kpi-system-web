@@ -1,206 +1,176 @@
 @extends('layouts.admin')
-@section('title', 'Dashboard')
+@section('title', 'Tổng quan KPI')
+
 @section('content')
-<div class="container-xxl flex-grow-1 container-p-y bg-light">
-    <h3 class="text-muted">Tổng quan</h3>
-    <div class="d-flex justify-content-between align-items-center flex-wrap gap-1">
-        
-    </div>
-    <h3 class="text-muted">Lọc</h3>
-    <div class="d-flex justify-content-start align-items-center flex-wrap gap-2">
-        <form class="form-control w-auto m-2" method="GET" action="">   
-              @csrf                  
-              <select name="filter_trang_thai" class="form-select border-0" event="change" onchange="this.form.submit()">
-                <option value="">Lọc theo Phòng ban</option>
-                <option value="1" {{ request('filter_trang_thai') == '1' ? 'selected' : '' }}>Hoạt động</option>
-                <option value="0" {{ request('filter_trang_thai') == '0' ? 'selected' : '' }}>Bị khóa</option>
-              </select> 
+<div class="container-fluid py-4" style="background-color: #bfdbf0; min-height: 100vh;">
+
+    <div class="card shadow-sm border-0 mb-4" style="border-radius: 12px;">
+        <div class="card-body">
+            <form id="mainForm" action="{{ route('dashboard') }}" method="GET" class="row align-items-end g-3">
+                @csrf
+                <div class="col-md-3">
+                    <label class="form-label fw-bold text-secondary small">Năm học</label>
+                    <select name="filter_nh" class="form-select border-2" onchange="this.form.submit()">
+                        @foreach($namhoc as $nh)
+                            <option value="{{$nh->id}}" {{ request('filter_nh') == $nh->id ? 'selected' : '' }}>{{$nh->ten_nam_hoc}}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label fw-bold text-secondary small">Phòng ban</label>
+                    <select name="filter_pb" class="form-select border-2" onchange="this.form.submit()">
+                        <option value="all">--- Tất cả phòng ban ---</option>
+                        @foreach($phong as $pb)
+                            <option value="{{$pb->id}}" {{ request('filter_pb') == $pb->id ? 'selected' : '' }}>{{$pb->ten_don_vi}}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label fw-bold text-secondary small">Nhân viên</label>
+                    <select class="form-select border-2" name="filter_nv" onchange="this.form.submit()">
+                        <option value="all">Tất cả</option>
+                        @foreach($user as $u)   
+                            <option value="{{$u->id}}" {{ request('filter_nv') == $u->id ? 'selected' : '' }}>{{$u->name}}</option>
+                        @endforeach
+                    </select>
+                </div>
+                
+                <div class="col-md-3 text-end">
+                    <button type="button" onclick="submitExport()" class="btn btn-success">
+                        <i class="bi bi-box-arrow-up-right"></i> Xuất Excel
+                    </button>
+                </div>
             </form>
-            <!-- Lọc theo quyền -->
-            <form class="form-control w-auto m-2" method="GET" action="">   
-              @csrf                  
-              <select name="filter_role" class="form-select border-0" event="change" onchange="this.form.submit()">
-                <option value="">Lọc độ ưu tiên</option>
-                <option value="admin" {{ request('filter_role') == 'admin' ? 'selected' : '' }}>Admin</option>
-                <option value="manager" {{ request('filter_role') == 'manager' ? 'selected' : '' }}>Manager</option>
-                <option value="staff" {{ request('filter_role') == 'staff' ? 'selected' : '' }}>Staff</option>
-              </select>
-            </form>
-    </div>
-        <div id="user-data-container">
-            <h3 class="text-muted">Danh sách công việc</h3>
-        <table class="datatables-User-list-list table-user table "> 
-            <thead>
-                <tr>
-                    <th class="text-lg-center" >Tên công việc</th>
-                    <th class="text-lg-center">Người thực hiện</th>
-                    <th class="text-lg-center">Tiến độ thực tế</th>
-                    <th class="text-lg-center">Ngày kết thúc</th>
-                    <th class="text-nowrap text-sm-end">Trạng thái</th>
-                    <th class="text-lg-center">Trạng thái</th>
-                    <th class="text-lg-center">Thao tác</th>
-                </tr>
-            </thead>
-            <tbody>
-            
-            </tbody>
-        </table>
-    </div>
- </div>
-    <div class="min-h-screen bg-[#F8F9FA] dark:bg-[#0a0a0a]">
-    <div class="container mx-auto px-4 py-6">
-        
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
-            <div>
-                <h1 class="text-2xl font-bold text-[#1b1b18] dark:text-white">Bảng điều khiển KPI</h1>
-                <p class="text-sm text-[#706f6c]">Học kỳ II - Năm học 2025-2026</p>
-            </div>
-            <div class="flex gap-2">
-                <select class="rounded-lg border-[#e3e3e0] text-sm dark:bg-[#161615] dark:text-white">
-                    <option>Tháng này</option>
-                    <option>Quý này</option>
-                </select>
-                <button class="bg-[#F53003] hover:bg-orange-600 text-dark px-4 py-2 rounded-lg text-sm font-medium transition-all">
-                    <i class="bi bi-plus-circle me-2"></i>Thêm báo cáo
-                </button>
-            </div>
         </div>
+    </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-            <div class="bg-white dark:bg-[#161615] p-5 rounded-xl shadow-sm border border-[#e3e3e0] dark:border-[#3E3E3A]">
-                <div class="flex items-center gap-3 mb-2">
-                    <div class="w-10 h-10 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center">
-                        <i class="bi bi-book fs-5"></i>
-                    </div>
-                    <span class="text-sm text-[#706f6c]">Lớp học mới</span>
-                </div>
-                <div class="flex items-baseline gap-2">
-                    <span class="text-2xl font-bold">24</span>
-                    <span class="text-xs text-green-500 font-bold">+15%</span>
-                </div>
-            </div>
+    <div class="row g-3 mb-4 text-center">
+        @php
+            $displayCards = [
+                ['label' => 'Tổng KPI', 'val' => $tong, 'color' => '#007bff'],
+                ['label' => 'Hoàn thành', 'val' => $hoanthanh, 'color' => '#28a745'],
+                ['label' => 'Chưa đạt', 'val' => $chuadat, 'color' => '#6c757d'],
+                ['label' => 'Đang thực hiện', 'val' => $dangthuchien, 'color' => '#17a2b8'],
+                ['label' => 'Sắp hết hạn', 'val' => $saphethan, 'color' => '#ffc107'],
+                ['label' => 'Quá hạn', 'val' => $quahan, 'color' => '#dc3545'],
+            ];
+        @endphp
 
-            <div class="bg-white dark:bg-[#161615] p-5 rounded-xl shadow-sm border border-[#e3e3e0] dark:border-[#3E3E3A]">
-                <div class="flex items-center gap-3 mb-2">
-                    <div class="w-10 h-10 bg-orange-100 text-orange-600 rounded-lg flex items-center justify-center">
-                        <i class="bi bi-person-badge fs-5"></i>
-                    </div>
-                    <span class="text-sm text-[#706f6c]">Giảng viên online</span>
-                </div>
-                <div class="flex items-baseline gap-2">
-                    <span class="text-2xl font-bold">12</span>
-                    <span class="text-xs text-[#706f6c]">Ổn định</span>
-                </div>
-            </div>
-
-            <div class="bg-white dark:bg-[#161615] p-5 rounded-xl shadow-sm border border-[#e3e3e0] dark:border-[#3E3E3A]">
-                <div class="flex items-center gap-3 mb-2">
-                    <div class="w-10 h-10 bg-green-100 text-green-600 rounded-lg flex items-center justify-center">
-                        <i class="bi bi-check-all fs-5"></i>
-                    </div>
-                    <span class="text-sm text-[#706f6c]">KPI Hoàn thành</span>
-                </div>
-                <div class="flex items-baseline gap-2">
-                    <span class="text-2xl font-bold">78%</span>
-                    <div class="w-full bg-gray-200 h-1 rounded-full ml-2">
-                        <div class="bg-green-500 h-1 rounded-full" style="width: 78%"></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-white dark:bg-[#161615] p-5 rounded-xl shadow-sm border border-[#e3e3e0] dark:border-[#3E3E3A]">
-                <div class="flex items-center gap-3 mb-2">
-                    <div class="w-10 h-10 bg-red-100 text-red-600 rounded-lg flex items-center justify-center">
-                        <i class="bi bi-exclamation-octagon fs-5"></i>
-                    </div>
-                    <span class="text-sm text-[#706f6c]">Việc sắp hết hạn</span>
-                </div>
-                <div class="flex items-baseline gap-2">
-                    <span class="text-2xl font-bold text-red-500">03</span>
+        @foreach($displayCards as $item)
+        <div class="col-md-2 col-6">
+            <div class="card h-100 shadow-sm border-0" style="border-top: 5px solid {{ $item['color'] }} !important; border-radius: 10px;">
+                <div class="card-body p-3">
+                    <p class="small fw-bold text-uppercase text-muted mb-1">{{ $item['label'] }}</p>
+                    <h3 class="fw-bold mb-0" style="color: {{ $item['color'] }}">{{ $item['val'] }}</h3>
                 </div>
             </div>
         </div>
+        @endforeach
+    </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            
-            <div class="lg:col-span-2 space-y-6">
-                <div class="bg-white dark:bg-[#161615] rounded-xl border border-[#e3e3e0] dark:border-[#3E3E3A] overflow-hidden shadow-sm">
-                    <div class="p-5 border-b border-[#f3f3f1] dark:border-[#3E3E3A] flex justify-between items-center">
-                        <h3 class="font-bold">Nhiệm vụ KPI trọng tâm</h3>
-                        <button class="text-xs text-blue-600">Xem tất cả</button>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-sm">
-                            <thead class="bg-[#fcfcfc] dark:bg-[#1b1b18] text-[#706f6c]">
-                                <tr>
-                                    <th class="p-4 font-semibold">Tên chỉ tiêu</th>
-                                    <th class="p-4 font-semibold">Mục tiêu</th>
-                                    <th class="p-4 font-semibold text-center">Tiến độ</th>
-                                    <th class="p-4 font-semibold">Hạn chót</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr class="border-b border-[#f3f3f1] dark:border-[#3E3E3A] hover:bg-gray-50 transition-colors">
-                                    <td class="p-4 font-medium">Lớp IELTS 6.5 mới</td>
-                                    <td class="p-4">10 lớp</td>
-                                    <td class="p-4">
-                                        <div class="flex items-center gap-2">
-                                            <div class="flex-1 bg-gray-200 h-1.5 rounded-full">
-                                                <div class="bg-blue-500 h-1.5 rounded-full" style="width: 60%"></div>
-                                            </div>
-                                            <span class="text-[11px]">60%</span>
-                                        </div>
-                                    </td>
-                                    <td class="p-4 text-xs">31/12/2026</td>
-                                </tr>
-                                <tr class="hover:bg-gray-50 transition-colors">
-                                    <td class="p-4 font-medium">Chứng chỉ MOS học viên</td>
-                                    <td class="p-4">500 CC</td>
-                                    <td class="p-4">
-                                        <div class="flex items-center gap-2">
-                                            <div class="flex-1 bg-gray-200 h-1.5 rounded-full">
-                                                <div class="bg-green-500 h-1.5 rounded-full" style="width: 100%"></div>
-                                            </div>
-                                            <span class="text-[11px]">100%</span>
-                                        </div>
-                                    </td>
-                                    <td class="p-4 text-xs">Hoàn thành</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+    <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px;">
+        <div class="card-body">
+            <h5 class="card-title fw-bold text-dark mb-3"><i class="fas fa-chart-bar me-2"></i>Thống kê báo cáo theo tháng</h5>
+            <div style="height: 300px; width: 100%;">
+                <canvas id="kpiChart"></canvas>
             </div>
+        </div>
+    </div>
 
-            <div class="space-y-6">
-                <div class="bg-white dark:bg-[#161615] p-6 rounded-xl border border-[#e3e3e0] dark:border-[#3E3E3A] shadow-sm text-center">
-                    <h3 class="font-bold mb-4">Tổng thể mục tiêu</h3>
-                    <div class="relative inline-flex items-center justify-center">
-                        <svg class="w-32 h-32">
-                            <circle class="text-gray-200" stroke-width="8" stroke="currentColor" fill="transparent" r="50" cx="64" cy="64"/>
-                            <circle class="text-[#F53003]" stroke-width="8" stroke-dasharray="314.15" stroke-dashoffset="62.8" stroke-linecap="round" stroke="currentColor" fill="transparent" r="50" cx="64" cy="64"/>
-                        </svg>
-                        <span class="absolute text-xl font-bold">80%</span>
-                    </div>
-                    <p class="text-xs text-[#706f6c] mt-4 italic">"Bạn đang đi đúng hướng!"</p>
-                </div>
+    <div class="card border-0 shadow-sm" style="border-radius: 12px; overflow: hidden;">
+        <div class="card-header bg-white py-3 border-0">
+            <h5 class="mb-0 fw-bold"><i class="fas fa-list-ul me-2"></i>Danh sách chi tiết KPI</h5>
+        </div>
+        <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
+                <table class="table table-bordered table-hover align-middle">
+                    <thead class="table-light" style="position: sticky; top: 0; z-index: 1;">
+                    <tr>
+                        <th class="ps-4">KPI</th>
+                        <th>Nhân viên</th>
+                        <th>Tiến độ</th>
+                        <th width="150">Tỷ lệ %</th>
+                        <th>Trạng thái</th>
+                        <th>Cảnh báo</th>
+                        <th class="pe-4 text-center">Hạn (Deadline)</th>
+                    </tr>
+                </thead>
 
-                <div class="bg-white dark:bg-[#161615] p-5 rounded-xl border border-[#e3e3e0] dark:border-[#3E3E3A] shadow-sm">
-                    <h3 class="font-bold mb-4">Ghi chú nhanh</h3>
-                    <ul class="space-y-3">
-                        <li class="flex gap-3 text-sm">
-                            <input type="checkbox" class="mt-1 rounded text-[#F53003]">
-                            <span>Duyệt danh sách thi Tin học văn phòng</span>
-                        </li>
-                        <li class="flex gap-3 text-sm">
-                            <input type="checkbox" class="mt-1 rounded text-[#F53003]">
-                            <span>Gửi báo cáo KPI Quý cho Ban Giám đốc</span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-
+                <tbody>
+                    @foreach($group as $tenDanhMuc => $list)
+                    <tr style="background-color: rgba(0, 123, 255, 0.05);">
+                        <td colspan="7" class="ps-4 text-primary fw-bold text-uppercase small">
+                            <i class="fas fa-tag me-1"></i> {{ $tenDanhMuc }}
+                        </td>
+                    </tr>
+                        @foreach($list as $tk)
+                        <tr>
+                            <td class="ps-4 fw-semibold">{{$tk->ten_kpi}}</td>
+                            <td>{{$tk->ten_nv}}</td>
+                            <td>
+                                @if($tk->so_lan_toi_thieu_thang != NULL)
+                                    <span class="text-info fw-bold">{{ $tk->so_thang_bao_cao }}</span>/{{ $tk->so_thang_yeu_cau }} <small>tháng</small>
+                                @else
+                                    <span class="text-success fw-bold">{{ $tk->thuc_te_dat_duoc }}</span>/{{ $tk->thuVienKPI->chi_tieu }}
+                                @endif
+                            </td>
+                            <td>
+                                <div class="progress" style="height: 10px; border-radius: 20px;">
+                                    <div class="progress-bar bg-success" role="progressbar" style="width: {{ $tk->tien_do }}%">
+                                        <small>{{ $tk->tien_do }}%</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                @php
+                                    $trang_thai = [
+                                        'da_hoan_thanh'  => ['label' => 'Đã hoàn thành', 'class' => 'bg-success'],
+                                        'dang_thuc_hien' => ['label' => 'Đang thực hiện', 'class' => 'bg-info'],
+                                        'chua_dat'       => ['label' => 'Chưa đạt',       'class' => 'bg-danger'],
+                                        'dang_no'        => ['label' => 'Đang nợ',        'class' => 'bg-warning'],
+                                        'chua_bat_dau'   => ['label' => 'Chưa bắt đầu',   'class' => 'bg-secondary'],
+                                    ];
+                                    $currentStatus = $trang_thai[$tk->trang_thai_tinh] ?? ['label' => $tk->trang_thai_tinh, 'class' => 'bg-light text-dark'];
+                                @endphp
+                                <span class="badge {{ $currentStatus['class'] }} px-2 py-1">
+                                    {{ $currentStatus['label'] }}
+                                </span>
+                            </td>
+                            <td>
+                                @php
+                                    $bg_MacDinh = 'success'; 
+                                    if (str_contains($tk->canh_bao, 'Không đủ tần suất') || str_contains($tk->canh_bao, 'ĐK phụ chưa đạt')) {
+                                        $bg_MacDinh = 'danger'; 
+                                    } elseif (str_contains($tk->canh_bao, 'Sắp hết hạn') || str_contains($tk->canh_bao, 'Đang trong chu kỳ')) {
+                                        $bg_MacDinh = 'warning text-dark'; 
+                                    } elseif (str_contains($tk->canh_bao, 'Chưa có dữ liệu') || str_contains($tk->canh_bao, 'Chưa bắt đầu')) {
+                                        $bg_MacDinh = 'secondary'; 
+                                    }
+                                @endphp
+                                <span class="badge bg-{{ $bg_MacDinh }} shadow-sm">
+                                    {{ $tk->canh_bao }}
+                                </span>
+                            </td>
+                            <td class="pe-4 text-center small fw-bold">{{ date('d/m/Y', strtotime($tk->ngay_ket_thuc)) }}</td>
+                        </tr>
+                        @endforeach
+                    @endforeach
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
+
+@push('script')
+<script>
+    window.chartData = {
+        labels: @json($nhan),
+        data: @json($giatri)
+    };
+    window.exportRoute = "{{ route('dashboard.export') }}";
+</script>
+<script src="{{ asset('js/chart.js') }}"></script>
+<script src="{{ asset('js/thongke.js') }}"></script>
+@endpush
 @endsection
