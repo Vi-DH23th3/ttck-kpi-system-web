@@ -4,6 +4,7 @@
             <tr>
                 <th width="40" class="text-center">
                     <input type="checkbox" class="form-check-input" id="selectAll">
+                    
                 </th>
                 <th>Họ tên</th>
             </tr>
@@ -12,7 +13,9 @@
             @foreach($users as $user)
             <tr>
                 <td class="text-center">
-                    <input type="checkbox" name="user_ids[]" value="{{$user->id}}" class="form-check-input user-checkbox">
+                    <input type="checkbox" name="user_ids[]" value="{{$user->id}}" class="form-check-input user-checkbox"
+                    {{ is_array(old('user_ids')) && in_array($user->id, old('user_ids')) ? 'checked' : '' }} >
+                    
                 </td>
                 <td>{{$user->name}} <small class="text-muted">({{$user->donVi->ten_don_vi ?? 'N/A'}})</small></td>
                 <!-- <p>{{$user->name}}</p> -->

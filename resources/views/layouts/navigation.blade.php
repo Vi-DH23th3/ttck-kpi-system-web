@@ -10,7 +10,7 @@
             </div>
                 <div class="d-flex align-items-center text-dark">
                     <a class="nav-link text-primary fw-bold py-2" href="{{ route('dashboard') }}">
-                        <i class="bi bi-speedometer2 me-1"></i> Dashboard
+                        <i class="bi bi-speedometer2 me-1"></i> Tổng quan
                     </a>
                     <button type="button" class="btn btn-outline-secondary text-dark border-0 btn-search "><i class="bi bi-search"></i></button>
                 @auth

@@ -27,20 +27,11 @@ return new class extends Migration
             ], 'unique_danhmuc_congviec');
         });
         Schema::table('bao_cao_cong_viec', function (Blueprint $table) {
-
-            // số file minh chứng đã nộp
-            $table->integer('tien_do_thuc')
-                ->default(0);
-
+            //tiến độ nhân viên nhập
+            $table->integer('tien_do_thuc')->nullable();
+            $table->json('gia_tri_thuc_te')->nullable();
         });
-        Schema::table('phan_cong_cong_viec', function (Blueprint $table) {
-            // số file minh chứng đã nộp
-            $table->integer('thuc_te_dat_duoc')
-                ->default(0);
-            // số lần báo cáo
-            $table->integer('so_lan_bao_cao')
-                ->default(0);
-        });
+
     }
 
     /**

@@ -2,124 +2,127 @@
 
 namespace App\Exports;
 
+use Carbon\Carbon;
+use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
-use Maatwebsite\Excel\Concerns\WithMapping;
-use Maatwebsite\Excel\Concerns\ShouldAutoSize;
-use Maatwebsite\Excel\Concerns\WithStyles;
-use Maatwebsite\Excel\Concerns\WithEvents;
-use Maatwebsite\Excel\Events\AfterSheet;
-use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
-use PhpOffice\PhpSpreadsheet\Style\Fill;
-use Carbon\Carbon;
 
-class CongViecExport implements FromCollection, WithHeadings, WithMapping, ShouldAutoSize, WithStyles, WithEvents
+class CongViecExport implements FromCollection, WithHeadings
 {
-    protected $groups, $tong, $hoanthanh, $chuadat, $dangthuchien, $saphethan, $quahan, $namhoc;
+    protected $data;
 
-    public function __construct($groups, $tong, $hoanthanh, $chuadat, $dangthuchien, $saphethan, $quahan, $namhoc)
+    public function __construct(Collection $data)
     {
-        $this->groups = $groups;
-        $this->tong = $tong;
-        $this->hoanthanh = $hoanthanh;
-        $this->chuadat = $chuadat;
-        $this->dangthuchien = $dangthuchien;
-        $this->saphethan = $saphethan;
-        $this->quahan = $quahan;
-        $this->namhoc = $namhoc;
+        $this->data = $data;
     }
 
-    // Gom tất cả các nhóm kpi lại thành 1 danh sách phẳng để xuất
     public function collection()
     {
-        $data = collect();
-        foreach ($this->groups as $tenDanhMuc => $danhSachKpi) {
-            foreach ($danhSachKpi as $kpi) {
-                $kpi->ten_danh_muc = $tenDanhMuc; // Gán tên danh mục vào để dùng ở map()
-                $data->push($kpi);
-            }
-        }
-        return $data;
+        return $this->data->map(function ($cv, $index) {
+
+            $canhBao = $cv->canh_bao ?? '';
+
+            return [
+                'STT' => $index + 1,
+                'Nhân viên' => $cv->ten_nv,
+                'Công việc' => $cv->ten_kpi,
+                'Danh mục' => $cv->phanCong->thuVienKPI->danhMuc->ten_cong_viec ?? 'N/A',
+                'Thời gian' => $cv->thoi_gian = Carbon::parse($cv->phanCong->ngay_bat_dau)->format('d-m-Y') . " - " . Carbon::parse($cv->phanCong->ngay_ket_thuc)->format('d-m-Y'),
+
+                'Thực tế/Chỉ tiêu' => $cv->thuc_te_dat_duoc . '/' . ($cv->phanCong->thuVienKPI->chi_tieu ?? 0),
+                'Tiến độ (%)' => $cv->tien_do,
+
+                'Trạng thái' => $this->formatTrangThai($cv->trang_thai_tinh),
+                'Deadline' => $this->formatDeadline($cv),
+
+               
+                'Lỗi tần suất' => str_contains($canhBao, 'tần suất') ? 'X' : '',
+                'Lỗi điều kiện' => str_contains($canhBao, 'điều kiện') ? 'X' : '',
+                'Quá hạn' => str_contains($canhBao, 'Quá hạn') ? 'X' : '',
+                'Sắp hết hạn' => str_contains($canhBao, 'Sắp hết hạn') ? '!' : '',
+                'Đạt sớm' => str_contains($canhBao, 'Đã đạt chỉ tiêu') ? 'X' : '',
+
+                'Đánh giá' => $cv->danh_gia ?? '',
+                'Ưu tiên' => $this->formatUuTien($cv->phanCong->muc_do_uu_tien ?? 1),
+
+                'Nguyên nhân' => $this->layNguyenNhan($canhBao),
+                'Hành động đề xuất' => $this->goiYHanhDong($canhBao),
+            ];
+        });
     }
 
-    // Tiêu đề cột (Dòng 10 sau khi chèn header)
     public function headings(): array
     {
         return [
-            'STT', 'Danh mục', 'Tên KPI', 'Nhân viên', 'Bắt đầu', 
-            'Kết thúc', 'Chỉ tiêu', 'Thực tế', 'Tiến độ','Số tháng yêu cầu',
-            'Số tháng đã báo cáo', 'Trạng thái', 'Cảnh báo'
+            'STT',
+            'Nhân viên',
+            'Công việc',
+            'Danh mục',
+            'Thời gian',
+            'Thực tế/Chỉ tiêu',
+            'Tiến độ (%)',
+            'Trạng thái',
+            'Deadline',
+            'Lỗi tần suất',
+            'Lỗi điều kiện',
+            'Quá hạn',
+            'Sắp hết hạn',
+            'Đạt sớm',
+            'Đánh giá',
+            'Ưu tiên',
+            'Nguyên nhân',
+            'Hành động đề xuất',
         ];
     }
 
-    // Đổ dữ liệu vào từng cột (Phải khớp thứ tự với headings)
-    public function map($cv): array
-    {
-        static $no = 0;
-        $no++;
+    // ===== Helper =====
 
-        return [
-            $no,
-            $cv->ten_danh_muc,
-            $cv->ten_kpi,
-            $cv->ten_nv,
-            Carbon::parse($cv->ngay_bat_dau)->format('d/m/Y'),
-            Carbon::parse($cv->ngay_ket_thuc)->format('d/m/Y'),
-            $cv->thuVienKPI->chi_tieu . ' ' . $cv->thuVienKPI->don_vi . '/' . $cv->thuVienKPI->chu_ky,
-            $cv->thuc_te_dat_duoc ?? 0,
-            $cv->tien_do . '%',
-            $cv->so_thang_yeu_cau ?? 0,
-            $cv->so_thang_bao_cao ?? 0,
-            $this->formatTrangThai($cv->trang_thai_tinh),
-            $cv->canh_bao
-        ];
-    }
-
-    private function formatTrangThai($status)
+    private function formatTrangThai($tt)
     {
-        return match ($status) {
-            'da_hoan_thanh' => 'Đã hoàn thành',
+        return match ($tt) {
+            'chua_bat_dau' => 'Chưa bắt đầu',
+            'da_hoan_thanh' => 'Hoàn thành',
             'dang_thuc_hien' => 'Đang thực hiện',
             'chua_dat' => 'Chưa đạt',
-            'dang_no' => 'Đang nợ',
-            'chua_bat_dau' => 'Chưa bắt đầu',
-            default => 'Khác',
+            'dang_no' => ' Đang nợ',
+            default => $tt
         };
     }
 
-    public function registerEvents(): array
+    private function formatDeadline($cv)
     {
-        return [
-            AfterSheet::class => function(AfterSheet $event) {
-                $sheet = $event->sheet->getDelegate();
-                $lastRow = $event->sheet->getHighestRow();
+        $now = now();
 
-                // Chèn 9 dòng trống ở trên đầu làm Header thông tin
-                $sheet->insertNewRowBefore(1, 9);
-                $sheet->setCellValue('A1', 'BÁO CÁO CHI TIẾT KPI NĂM HỌC ' . ($this->namhoc->ten_nam_hoc ?? ''));
-                $sheet->setCellValue('A2', 'Ngày xuất: ' . Carbon::now()->format('d/m/Y H:i'));
-                
-                $sheet->setCellValue('A4', "Tổng: $this->tong | Hoàn thành: $this->hoanthanh | Chưa đạt: $this->chuadat");
-                $sheet->setCellValue('A5', "Đang làm: $this->dangthuchien | Sắp hết hạn: $this->saphethan | Quá hạn: $this->quahan");
+        if ($cv->phanCong->ngay_ket_thuc < $now) return 'Quá hạn';
+        if ($cv->phanCong->ngay_ket_thuc <= $now->copy()->addDays(7)) return 'Sắp hết hạn';
 
-                // Tô màu cột Cảnh báo (Bây giờ là cột K vì ta thêm cột ngày tháng)
-                for ($row = 10; $row <= $lastRow; $row++) {
-                    $cellValue = $sheet->getCell("K$row")->getValue();
-                    
-                    if (str_contains($cellValue, 'Không đủ') || str_contains($cellValue, 'chưa đạt')) {
-                        $this->setColor($sheet, "K$row", 'FFC7CE', '9C0006'); // Đỏ
-                    } elseif (str_contains($cellValue, 'Sắp hết hạn') || str_contains($cellValue, 'chu kỳ')) {
-                        $this->setColor($sheet, "K$row", 'FFEB9C', '9C6500'); // Vàng
-                    }
-                }
-            }
-        ];
+        return 'Còn hạn';
     }
 
-    private function setColor($sheet, $cell, $bgColor, $fontColor) {
-        $sheet->getStyle($cell)->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB($bgColor);
-        $sheet->getStyle($cell)->getFont()->getColor()->setARGB($fontColor);
+    private function formatUuTien($muc)
+    {
+        return match ($muc) {
+            3 => 'Cao',
+            2 => 'Trung bình',
+            default => 'Thấp'
+        };
     }
 
-    public function styles(Worksheet $sheet) { return []; }
+    private function layNguyenNhan($canhBao)
+    {
+        if (str_contains($canhBao, 'tần suất')) return 'Thiếu tần suất';
+        if (str_contains($canhBao, 'điều kiện')) return 'Chưa đạt điều kiện phụ';
+        if (str_contains($canhBao, 'Quá hạn')) return 'Quá hạn chưa hoàn thành';
+
+        return 'Ổn định';
+    }
+
+    private function goiYHanhDong($canhBao)
+    {
+        if (str_contains($canhBao, 'tần suất')) return 'Tăng số lần báo cáo';
+        if (str_contains($canhBao, 'điều kiện')) return 'Bổ sung dữ liệu điều kiện';
+        if (str_contains($canhBao, 'Quá hạn')) return 'Ưu tiên xử lý gấp';
+
+        return 'Tiếp tục duy trì';
+    }
 }

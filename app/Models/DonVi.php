@@ -3,9 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class DonVi extends Model
 {
+    use SoftDeletes;
     protected $table = 'don_vi';
     protected $fillable = ['ten_don_vi'];
 

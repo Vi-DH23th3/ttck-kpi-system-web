@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('ten_cong_viec');
             $table->foreignId('don_vi_id')->constrained('don_vi')->onDelete('cascade');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

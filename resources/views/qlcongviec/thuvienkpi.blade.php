@@ -2,135 +2,137 @@
 @section('title', 'Thư viện KPI')
 
 @section('content')
-    <div class="container py-4">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h4><i class="bi bi-book-half me-2"></i>Thư viện KPI mẫu</h4>
-            <button class="btn btn-primary mb-3 btn-add-KPI" data-bs-toggle="offcanvas" data-bs-target="#offcanvasAddKPI" aria-controls="offcanvasAddKPI">
-                <i class="bi bi-plus-lg me-1"></i> Thêm KPI vào kho
-            </button>
-            <!-- <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addKpiModal">
-                <i class="bi bi-plus-lg me-1"></i> Thêm KPI vào kho
-            </button> -->
-        </div>
+<div class="container-fluid flex-grow-1 container-p-y" >
+    
+    <div class="d-flex justify-content-between align-items-center mb-4 px-2 mt-3">
+        <h4 class="fw-bold text-dark mb-0">
+            <i class="bi bi-book-half me-2 text-primary"></i>Thư viện KPI mẫu
+        </h4>
+        <button class="btn btn-primary shadow-sm btn-add-KPI px-4 fw-bold" data-bs-toggle="offcanvas" data-bs-target="#offcanvasAddKPI" aria-controls="offcanvasAddKPI">
+            <i class="bi bi-plus-lg me-1"></i> Thêm KPI vào kho
+        </button>
+    </div>
 
-        <div class="d-flex justify-content-start align-items-center gap-2">
-            <form action="" method="GET" class="d-inline-block w-auto">
-                @csrf
-                <select name="dm_id" 
-                        class="form-select shadow-sm fw-semibold text-secondary border-secondary-subtle" 
-                        style="font-size: 0.9rem; min-width: 200px;" 
-                        onchange="this.form.submit()">
-                    <option value="" class="fw-normal">-- Tất cả danh mục --</option>
-                    @foreach($dmcv as $dm)
-                        <option value="{{ $dm->id }}" {{ request('dm_id') == $dm->id ? 'selected' : '' }}>
-                            {{ $dm->ten_cong_viec }}
-                        </option>
-                    @endforeach
-                </select>
-            </form>
-            <form action="" method="GET" class="d-inline-block w-auto">
-                @csrf
-                <select name="nh_id" 
-                        class="form-select shadow-sm fw-semibold text-secondary border-secondary-subtle" 
-                        style="font-size: 0.9rem; min-width: 180px;" 
-                        onchange="this.form.submit()">
-                    <option value="" class="fw-normal">-- Tất cả năm học --</option>
-                    @foreach($namhoc as $nh)
-                        <option value="{{$nh->id}}" {{ request('nh_id') == $nh->id ? 'selected' : '' }}>
-                            {{$nh->ten_nam_hoc}}
-                        </option>
-                    @endforeach
-                </select>
-            </form>
+    <div class="card border-0 shadow-sm rounded-4 mb-4">
+        <div class="card-body p-3">
+            <div class="row g-3 align-items-center">
+                <div class="col-md-auto">
+                    <span class="text-muted small fw-bold text-uppercase px-2">Bộ lọc:</span>
+                </div>
+                <div class="col-md-3">
+                    <form action="" method="GET">
+                        <select name="dm_id" class="form-select border-2 rounded-pill shadow-none fw-semibold text-secondary" style="font-size: 0.85rem;" onchange="this.form.submit()">
+                            <option value="">-- Tất cả danh mục --</option>
+                            @foreach($dmcv as $dm)
+                                <option value="{{ $dm->id }}" {{ request('dm_id') == $dm->id ? 'selected' : '' }}>
+                                    {{ $dm->ten_cong_viec }} - {{ $dm->donVi->ten_don_vi ?? '' }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </form>
+                </div>
+            </div>
         </div>
+    </div>
 
-        
-        <div class="table-responsive bg-white rounded shadow-sm">
-            <table class="datatables-User-list-list table-user table "> 
-                        <thead>
-                            <tr>
-                                <th class="text-start">Tên KPI mẫu</th>
-                                <th class="text-lg-center">Danh mục</th>
-                                <th class="text-lg-center">Định mức</th>
-                                <th class="text-lg-center">Tần suất</th>
-                                <th class="text-lg-center">Hành động</th>
-                            </tr>
-                        </thead>
-                        <tbody class="text-center">
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+        <div class="table-responsive"style="max-height: 500px; overflow-y: auto;">
+            <table class="table table-bordered table-hover align-middle">
+                    <thead class="table-light" style="position: sticky; top: 0; z-index: 1;">
+                    <tr class="text-muted small fw-bold text-uppercase">
+                        <th class="ps-4 py-3 text-white bg-primary" style="width: 35%;">Tên KPI mẫu</th>
+                        <th class="text-center text-white bg-primary">Danh mục</th>
+                        <th class="text-center text-white bg-primary">Định mức</th>
+                        <th class="text-center text-white bg-primary">Chu kỳ</th>
+                        <th class="pe-4 text-center text-white bg-primary">Hành động</th>
+                    </tr>
+                </thead>
+                <tbody>
                     @foreach($ds_kpi_mau as $kpi)
                     <tr>
-                        <td class="kpi-row-{{ $kpi->id }} text-start">{{ $kpi->ten_kpi }}</td>
-                        <td><span class="badge border text-dark text-lg-center">{{ $kpi->danhMuc->ten_cong_viec }}</span></td>
-                        <td>{{ $kpi->chi_tieu }} {{ $kpi->don_vi }}</td>
-                        <td>{{ $kpi->chu_ky }}</td>
-                        <td>
-                            <a href="{{ route('qlcongviec.giaochitieu', ['kpi_id' => $kpi->id]) }}" class="btn btn-sm btn-success shadow-sm">
-                                <i class="bi bi-send-plus-fill me-1"></i> Giao chỉ tiêu ngay
+                        <td class="ps-4 kpi-row-{{ $kpi->id }}">
+                            <div class="fw-semibold text-dark">{{ $kpi->ten_kpi }}</div>
+                            @if($kpi->ghi_chu)
+                                <div class="text-muted x-small" style="font-size: 0.75rem;">{{ $kpi->ghi_chu }}</div>
+                            @endif
+                        </td>
+                        <td class="text-center">
+                            <span class="badge bg-label-secondary rounded-pill px-3 text-muted">{{ $kpi->danhMuc->ten_cong_viec }}</span>
+                        </td>
+                        <td class="text-center fw-bold text-primary">
+                            {{ $kpi->chi_tieu }} <small class="text-muted fw-normal">{{ $kpi->don_vi }}</small>
+                        </td>
+                        <td class="text-center">
+                            <span class="text-secondary"><i class="bi bi-calendar3 me-1"></i>{{ $kpi->chu_ky }}</span>
+                        </td>
+                        @if(Auth::user()->role == 'manager')
+                        <td class="pe-4 text-center">
+                            <a href="{{ route('manager.qlcongviec.giaochitieu', ['kpi_id' => $kpi->id]) }}" class="btn btn-sm btn-success rounded-pill px-3 shadow-sm fw-bold border-0">
+                                <i class="bi bi-send-plus-fill me-1"></i> Giao chỉ tiêu
                             </a>
                         </td>
+                        @endif
                     </tr>
                     @endforeach
                 </tbody>
             </table>
         </div>
-        <!-- Offcanvas để thêm kpi mới -->
-            <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasAddKPI" aria-labelledby="addKPILabel">
-                <!-- Header Thêm KPI -->
-                <div class="offcanvas-header py-2">
-                    <h5 id="addKPILabel" class="offcanvas-title text-muted">Thêm KPI mới</h5>
-                    <button type="button" class="btn-close bg-label-secondary text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-                </div>
-                <!-- Offcanvas Body -->
-                <div class="offcanvas-body border-top">
-                <form class="pt-0" id="addKPI-listListForm" onsubmit="return true" action="{{route('qlcongviec.thuvienkpi.create')}}" method="POST">
-                    @csrf
-                    <!-- Tên -->
-                    <div class="mb-3">
-                        <label class="form-label text-muted" for="add-KPI-list-title">Tên KPI</label>
-                        <input type="text" class="form-control add-name" id="add-KPI-list-title" placeholder="Nhập KPI mới" name="name_KPI" aria-label="KPI-list title">
-                    </div>
-                    <div class="mb-3">
-                        <label class="small text-muted">Chỉ tiêu</label>
-                        <input type="text" name="chi_tieu" class="form-control">
-                    </div>
-                    <div class="mb-3">
-                        <label class="small text-muted">Đơn vị</label>
-                        <input type="text" name="don_vi" class="form-control">
-                    </div>
-                    <div class="mb-3">
-                        <label class="small text-muted">Tần xuất</label>
-                        <input type="text" name="chu_ky" class="form-control">
-                    </div>
-                    <!-- Danh sách đơn vị -->
-                    <div class="mb-3">
-                        <label class="form-label text-muted" for="add-DMCV-list-image">Danh mục công việc</label>
-                        <select name="dm_id" id="dm_add" class="form-select add-dm">
-                        <option class="" value="0">Chọn danh mục công việc</option>
-                        @foreach($dmcv as $cv)
-                        <option value="{{$cv->id}}" >{{$cv->ten_cong_viec}}</option>
-                        @endforeach
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label text-muted" for="add-User-list-image">Năm học</label>
-                        <select name="nam_hoc_id" id="nam_hoc_add" class="form-select add-nam-hoc">
-                        <option class="" value="0">Chọn năm học</option>
-                        @foreach($namhoc as $nh)
-                        <option value="{{$nh->id}}" >{{$nh->ten_nam_hoc}}</option>
-                        @endforeach
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label class="small text-muted">Ghi chú (nếu có)</label>
-                        <textarea name="ghi_chu" class="form-control" rows="3"></textarea>
-                    </div>
-                    <!-- Submit and reset -->
-                    <div class="mb-3">
-                    <button type="submit" class="btn btn-primary me-sm-3 me-1 add-submit">Thêm</button>
-                    <!-- <button type="reset" class="btn bg-danger text-white" data-bs-dismiss="offcanvas">Discard</button> -->
-                    </div>
-                </form>
-                </div>
-            </div>
     </div>
+
+    <div class="offcanvas offcanvas-end border-0 shadow" tabindex="-1" id="offcanvasAddKPI" style="width:50%;">
+        <div class="offcanvas-header bg-primary text-white py-4">
+            <h5 class="offcanvas-title fw-bold text-white"><i class="bi bi-plus-circle me-2"></i>Thêm KPI vào kho</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body p-4">
+            <form id="addKPI-listListForm" action="{{route('system.qlcongviec.thuvienkpi.create')}}" method="POST">
+                @csrf
+                <div class="mb-3">
+                    <label class="form-label fw-bold text-muted small">Tên KPI mẫu</label>
+                    <textarea class="form-control border-2 add-name" rows="2" placeholder="Ví dụ: Số lượng bài báo khoa học..." name="name_KPI"></textarea>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-6">
+                        <label class="form-label fw-bold text-muted small">Chỉ tiêu (Số)</label>
+                        <input type="text" name="chi_tieu" class="form-control border-2" placeholder="Ví dụ: 10">
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label fw-bold text-muted small">Đơn vị tính</label>
+                        <input type="text" name="don_vi" class="form-control border-2" placeholder="Ví dụ: Bài/Giờ">
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold text-muted small">Chu kỳ</label>
+                    <input type="text" name="chu_ky" class="form-control border-2" placeholder="Ví dụ: Tháng/Học kỳ/Năm">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold text-muted small">Danh mục công việc</label>
+                    <select name="dm_id" class="form-select border-2 add-dm">
+                        <option value="0">--- Chọn danh mục ---</option>
+                        @foreach($dmcv as $cv)
+                            <option value="{{$cv->id}}">{{$cv->ten_cong_viec}}</option>
+                        @endforeach
+                    </select>
+                    <a href="{{route('system.dmcongviec.index')}}">+ Thêm danh mục mới</a>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-bold text-muted small">Ghi chú hướng dẫn</label>
+                    <textarea name="ghi_chu" class="form-control border-2" rows="3" placeholder="Hướng dẫn cách tính hoặc minh chứng..."></textarea>
+                </div>
+
+                <div class="d-grid gap-2">
+                    <button type="button" class="btn btn-primary btn-lg fw-bold add-submit shadow-sm" onclick="xacNhan(this)" data-message="Xác nhận thêm KPI vào kho?">Thêm vào kho</button>
+                    <button type="button" class="btn btn-light btn-lg text-muted" data-bs-dismiss="offcanvas">Hủy</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@push('script')
+    <script src="{{ asset('js/thongbaoxacnhan.js') }}"></script>
+@endpush
 @endsection

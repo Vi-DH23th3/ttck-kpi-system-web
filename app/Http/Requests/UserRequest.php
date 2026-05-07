@@ -33,10 +33,9 @@ class UserRequest extends FormRequest
         return [
             'name'     => 'required',
             'email'    => 'required|email|unique:users,email',
-            'password' => 'required|min:6',
-            'chucvu' => 'nullable|string|max:255',
+            'chuc_vu_id' => 'required|string|max:255',
             'role' => 'required|string|in:admin,manager,staff',
-            'don_vi_id' => 'nullable|exists:don_vi,id',
+            'don_vi_id' => 'required|exists:don_vi,id',
         ];
     }
 
@@ -46,9 +45,9 @@ class UserRequest extends FormRequest
         return [
             'name'     => 'required',
             'email'    => 'required|email|unique:users,email,' . $userId,
-            'chucvu' => 'nullable|string|max:255',
+            'chuc_vu_id' => 'required|string|max:255',
             'role' => 'required|string|in:admin,manager,staff',
-            'don_vi_id' => 'nullable|exists:don_vi,id',
+            'don_vi_id' => 'required|exists:don_vi,id',
             
         ];
     }
@@ -59,19 +58,15 @@ class UserRequest extends FormRequest
             'email.required' => 'Email không được để trống.',
             'email.email' => 'Email phải có định dạng hợp lệ.',
             'email.unique' => 'Email đã tồn tại trong hệ thống.',
-            'password.required' => 'Mật khẩu không được để trống.',
-            'password.min' => 'Mật khẩu phải có ít nhất 6 ký tự.',
             'role.required' => 'Vai trò không được để trống.',
             'role.in' => 'Vai trò phải là admin, manager hoặc staff.',
+            'chuc_vu_id.required' => 'Chức vụ không được để trống.',
             'don_vi_id.exists' => 'Đơn vị không tồn tại trong hệ thống.',
         ];
     }
     public function failedValidation(Validator $validator)
     {
-        // Nếu validation thất bại, trả về lỗi dưới dạng JSON
-        //throw làm dừng quá trình thực thi và trả về phản hồi lỗi
-        //http response exception để trả về lỗi với mã trạng thái 422 (Unprocessable Entity) và thông tin lỗi chi tiết
-        //Bỏ qua toàn bộ controller và trả response ngay lập tức cho client (AJAX)
+      
         throw new HttpResponseException(response()->json([
             'success' => false,
             'message' => 'Validation errors',

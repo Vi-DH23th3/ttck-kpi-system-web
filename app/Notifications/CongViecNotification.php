@@ -10,14 +10,16 @@ use Illuminate\Notifications\Notification;
 class CongViecNotification extends Notification
 {
     use Queueable;
+    public $title;
     public $message; 
     public $link;
     //public $type;
     /**
      * Create a new notification instance.
      */
-    public function __construct($message, $link ='#')
+    public function __construct($title, $message, $link ='#')
     {
+        $this->title = $title;
         $this->message = $message;
         $this->link = $link;
     }
@@ -50,7 +52,8 @@ class CongViecNotification extends Notification
     public function toArray(object $notifiable): array
     {
         return [
-            'title' => 'Thông báo từ hệ thống KPI',
+            // 'title' => 'Thông báo từ hệ thống KPI',
+            'title' => $this->title,
             'message' => $this->message,
             'link' => $this->link,
         ];

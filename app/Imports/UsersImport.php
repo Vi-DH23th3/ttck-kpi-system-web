@@ -1,7 +1,7 @@
 <?php
 namespace App\Imports;
 
-use App\Http\Requests\UserRequest;
+use Illuminate\Support\Str;
 use App\Models\ChucVu;
 use App\Models\User;
 use App\Models\DonVi;
@@ -23,13 +23,14 @@ class UsersImport implements ToModel, WithHeadingRow , WithValidation, SkipsOnFa
     {
        // dd($row);
         $this->rows++;
-       
+        
         $donViId = null;
         if (isset($row['don_vi'])) {
-            $donVi = DonVi::where('ten_don_vi', $row['don_vi'])->first();
-            if ($donVi) {
-                $donViId = $donVi->id;
-            }
+            $donVi = DonVi::all()->first(function ($dv) use ($row) {
+                return Str::slug($dv->ten_don_vi) === Str::slug($row['don_vi']);
+            });
+
+            $donViId = $donVi?->id;
         }
         $chucVuId = null;
         if (isset($row['chuc_vu'])) {
@@ -38,22 +39,6 @@ class UsersImport implements ToModel, WithHeadingRow , WithValidation, SkipsOnFa
                 $chucVuId = $chucvu->id;
             }
         }
-        // $chucvuRaw = trim($row['chuc_vu'] ?? '');
-        
-        // // Dùng mb_strtolower để so sánh không phân biệt hoa thường 
-        // $chucvuLower = mb_strtolower($chucvuRaw);
-
-        // if($chucvuLower == 'giám đốc') {
-        //     $chucvu = 'GD';
-        // } elseif($chucvuLower == 'trưởng phòng') {
-        //     $chucvu = 'TP';
-        // } elseif($chucvuLower == 'phó trưởng phòng') {
-        //     $chucvu = 'PTP';
-        // } else {
-        //     $chucvu = 'NV';
-        // }
-        
-      // dd($row, $chucvu, $donViId);
         return new User([
             'name'      => $row['name'],      
             'email'     => $row['email'],     

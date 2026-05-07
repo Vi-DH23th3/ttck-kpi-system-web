@@ -17,4 +17,8 @@ class GiaoKPIImport implements ToCollection, WithHeadingRow, SkipsEmptyRows
     {
         //
     }
+    public function headingRow(): int
+    {
+        return 2;
+    }
 }

@@ -23,16 +23,12 @@ class GiaoKPIRequest extends FormRequest
     {
         return [
             //KPI + danh mục
-            'kpi_id' => 'nullable|exists:thu_vien_kpi,id',
-            'dmcv_id' => 'nullable|exists:danhmuc_cong_viec,id',
-            'namhoc_id' => 'required|exists:nam_hoc,id',
-            'donvi_id' => 'required|exists:don_vi,id',
-            //Khi thay dổi kpi so với thư viện
             'ten_dmcv' => 'nullable|string|max:255',
             'ten_kpi'  => 'nullable|string|max:255',
             'chi_tieu' => 'nullable|numeric|min:0',
             'don_vi'   => 'nullable|string|max:50', 
-            'chu_ky'   => 'nullable|in:thang,quy,nam,3_nam',
+            'chu_ky'   => 'nullable',
+            'loai_kpi' => 'required|in:don_gian,da_chi_tieu,nang_cao',
             //Phân công
             'muc_do' => 'required|in:1,2,3',
             'ngay_bat_dau' => 'required|date',
@@ -47,20 +43,11 @@ class GiaoKPIRequest extends FormRequest
     {
         return [
             // Danh mục & KPI
-            'dmcv_id.required' => 'Vui lòng chọn danh mục công việc',
-            'dmcv_id.exists' => 'Danh mục không tồn tại',
-            'kpi_id.exists' => 'KPI không tồn tại',
-            'namhoc_id.required' => 'Vui lòng chọn năm học',
-            'namhoc_id.exists' => 'Năm học không hợp lệ',
-            'donvi_id.required' => 'Vui lòng chọn đơn vị',
-            'donvi_id.exists' => 'Đơn vị không tồn tại',
-            // KPI nhập tay
             'ten_dmcv.string' => 'Tên danh mục phải là chuỗi',
             'ten_kpi.string' => 'Tên KPI phải là chuỗi',
             'chi_tieu.numeric' => 'Chỉ tiêu phải là số',
             'chi_tieu.min' => 'Chỉ tiêu không được âm',
             'don_vi.string' => 'Đơn vị phải là chuỗi',
-            'chu_ky.in' => 'Chu kỳ phải là tháng, quý, năm hoặc 3 năm',
             // Phân công
             'muc_do.required' => 'Vui lòng chọn mức độ ưu tiên',
             'muc_do.in' => 'Mức độ không hợp lệ',

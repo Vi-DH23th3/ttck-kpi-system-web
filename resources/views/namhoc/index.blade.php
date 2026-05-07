@@ -5,6 +5,7 @@
 <div class="container-xxl flex-grow-1 container-p-y">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h4 class="py-3 mb-0">
+            <i class="bi bi-mortarboard"></i>
             Danh sách năm học
         </h4>
         @can('admin')
@@ -19,11 +20,11 @@
             <table class="table table-hover align-middle mb-0">
                 <thead class="table-light">
                     <tr>
-                        <th class="ps-4" style="width: 100px;">STT</th>
-                        <th>Tên năm học</th>
-                        <th>Ngày bắt đầu</th>
-                        <th>Ngày kết thúc</th>
-                        <th class="text-center" style="width: 200px;">Thao tác</th>
+                        <th class="ps-4 text-white bg-primary" style="width: 100px;">STT</th>
+                        <th class="text-white bg-primary">Tên năm học</th>
+                        <th class="text-white bg-primary">Ngày bắt đầu</th>
+                        <th class="text-white bg-primary">Ngày kết thúc</th>
+                        <th class="text-white bg-primary" class="text-center" style="width: 200px;">Thao tác</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -47,7 +48,7 @@
                                     <i class="bi bi-pencil"></i>
                                 </button>
                                 
-                                <form action="{{route('namhoc.destroy',$nh->id)}}" method="POST" class="d-inline">
+                                <form action="{{route('admin.namhoc.destroy',$nh->id)}}" method="POST" class="d-inline">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-icon btn-outline-danger btn-sm" 
@@ -74,7 +75,7 @@
         </div>
         <!-- Offcanvas Body -->
         <div class="offcanvas-body border-top">
-            <form class="pt-0" id="addNamHoc-listListForm" onsubmit="return true" action="{{route('namhoc.store')}}" method="POST">
+            <form class="pt-0" id="addNamHoc-listListForm" action="{{route('admin.namhoc.store')}}" method="POST">
             @csrf
             <!-- Tên năm học -->
             <div class="mb-3">
@@ -93,7 +94,7 @@
                 </div>
             <!-- Submit and reset -->
             <div class="mb-3">
-                <button type="submit" class="btn btn-primary me-sm-3 me-1 add-submit">Thêm</button>
+                <button type="button" class="btn btn-primary me-sm-3 me-1 add-submit" onclick="xacNhan(this)" data-message="Xác nhận thêm năm học?">Thêm</button>
                 <button type="reset" class="btn bg-danger text-white" data-bs-dismiss="offcanvas">Hủy</button>
             </div>
             </form>
@@ -109,7 +110,7 @@
       <!-- Offcanvas Body -->
         <div class="offcanvas-body border-top">
             <p class="idnh"></p>
-            <form class="pt-0" id="eCommerceNamHoc-listListForm" onsubmit="return true" method="POST" action="">
+            <form class="pt-0" id="eCommerceNamHoc-listListForm" method="POST" action="">
             @csrf
             <input type="hidden" class="edit-id" name="id_namhoc">
             <!-- Tên năm học -->
@@ -129,7 +130,7 @@
             </div>
             <!-- Submit and reset -->
             <div class="mb-3">
-                <button type="submit" class="btn btn-primary me-sm-3 me-1 data-submit edit-submit" onclick="return confirm('Bạn có chắc chắn muốn cập nhật năm học này?')">
+                <button type="button" class="btn btn-primary me-sm-3 me-1 data-submit edit-submit">
                     Cập nhật
                 </button>
                 <button type="reset" class="btn bg-danger text-white" data-bs-dismiss="offcanvas">Hủy</button>
@@ -143,6 +144,7 @@
   @push('script')
     
     <script src="{{ asset('js/namhoc.js') }}"></script>
+    <script src="{{ asset('js/thongbaoxacnhan.js') }}"></script>
   @endpush
 
   @endsection

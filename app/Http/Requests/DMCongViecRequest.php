@@ -29,7 +29,7 @@ class DMCongViecRequest extends FormRequest
     protected function storeRules()
     {
         return [
-            'ten_cong_viec'     => 'required',
+            'name_DMCV'     => 'required',
             'don_vi_id' => 'nullable|exists:don_vi,id',
         ];
     }
@@ -38,13 +38,13 @@ class DMCongViecRequest extends FormRequest
     {
         $userId = $this->route('user');
         return [
-            'ten_cong_viec'     => 'required',
+            'name_DMCV'     => 'required',
         ];
     }
     public function messages()
     {
         return [
-            'ten_cong_viec.required' => 'Tên công việc không được để trống.',
+            'name_DMCV.required' => 'Tên công việc không được để trống.',
             'don_vi_id.exists' => 'Đơn vị không tồn tại trong hệ thống.',
         ];
     }

@@ -15,14 +15,14 @@ return new class extends Migration
             
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->foreignId('phan_cong_id')->constrained('phan_cong_cong_viec')->onDelete('cascade');
-            //$table->foreignId('kpi_mau_id')->constrained('kpi_mau')->onDelete('cascade');
+            $table->foreignId('chi_tiet_phan_cong_id')->constrained('chi_tiet_phan_cong')->onDelete('cascade');
             $table->date('ngay_thuc_hien');
-            $table->string('trang_thai_bao_cao')->default('dang_lam'); //đang làm, đã nộp, đã chỉnh sửa
+          //  $table->string('trang_thai_bao_cao')->default('dang_lam'); //đang làm, đã nộp, đã chỉnh sửa
             $table->string('file_minh_chung')->nullable();
             $table->foreignId('user_duyet_id')->nullable()->constrained('users')->nullOnDelete();
             $table->text('ghi_chu')->nullable();
-            $table->string('trangthai_duyet')->default('chua_duyet'); // chua_duyet, da_duyet, tu_choi
+            $table->text('ghi_chu_quan_ly')->nullable();
+            $table->string('trangthai_duyet')->default('chua_duyet'); // chua_duyet, da_duyet, tra_lai
             $table->softDeletes();
             $table->timestamps();
         });

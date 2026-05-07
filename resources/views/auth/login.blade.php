@@ -12,21 +12,25 @@
                         <input class="form-control mb-3 w-100 mx-auto" id="email" type="email" name="email" value="{{ old('email') }}" required>
                         <label for="" >Mật khẩu</label>
                         <input class="form-control mb-3 w-100 mx-auto" id="password" type="password" name="password" required>
-                    <div class="remember-forgot d-flex justify-content-between mb-3">
-                        <label><input type="checkbox" name="remember" > Ghi nhớ đăng nhập</label>                        @if (Route::has('password.request'))
-                            <a href="{{ route('password.request') }}">Quên mật khẩu?</a>
-                        @endif
+                    <div class="remember-forgot text-end mb-3">
+                        <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#forgotPasswordModal">
+                            Quên mật khẩu?
+                        </a>
                     </div>
-                    <div class="error">
-                        @if ($errors->any())
-                            <div class="alert-error">
-                                <ul>
-                                    @foreach ($errors->all() as $error)
-                                        <li>{{ $error }}</li>
-                                    @endforeach
-                                </ul>
+
+                    <div class="modal fade" id="forgotPasswordModal" tabindex="-1">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Quên mật khẩu?</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+                                <div class="modal-body text-center">
+                                    <p>Vui lòng liên hệ trực tiếp với <strong>Phòng Quản trị Hệ thống</strong> hoặc <strong>Admin</strong> để được cấp lại mật khẩu mới.</p>
+                                    <p class="text-muted small">Hotline: 0123.456.789</p>
+                                </div>
                             </div>
-                        @endif
+                        </div>
                     </div>
                     <div class="text-end"><button type="submit" class="btn btn-primary w-100" >Đăng nhập</button></div>
                 </form>

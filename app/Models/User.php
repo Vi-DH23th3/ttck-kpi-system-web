@@ -4,18 +4,22 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, SoftDeletes;
     /**
      * The attributes that are mass assignable.
      *
      * @var list<string>
      */
+    // protected $policies = [
+    //     \App\Models\User::class => \App\Policies\UserPolicy::class,
+    // ];
     protected $fillable = [
         'name',
         'email',
@@ -26,6 +30,7 @@ class User extends Authenticatable
         'avatar',
         'trang_thai',
         'must_change_password',
+        'google_id',
     ];
 
     /**
@@ -62,8 +67,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(BaoCaoCongViec::class, 'user_id');
     }
-    public function phanCong()
-    {
-        return $this->hasMany(PhanCongCongViec::class, 'user_id');
+     public function nguoiDuocGiao() {
+        return $this->hasMany(ChiTietPhanCong::class, 'user_id');
     }
+    public function nguoiPhanCong() {
+        return $this->hasMany(PhanCongCongViec::class, 'user_phan_cong_id');
+    }
+    // public function phanCong()
+    // {
+    //     return $this->hasMany(PhanCongCongViec::class, 'user_id');
+    // }
 }

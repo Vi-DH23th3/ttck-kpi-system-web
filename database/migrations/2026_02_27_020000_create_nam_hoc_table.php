@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('ten_nam_hoc'); // 2024-2025
             $table->date('ngay_bat_dau')->nullable();
             $table->date('ngay_ket_thuc')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

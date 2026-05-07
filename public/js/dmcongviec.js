@@ -1,22 +1,37 @@
 $(document).ready(function () {
     $(".btn_edit_cv").click(function (e) {
         let dmcongviecId = $(this).data("cv-id");
-        // console.log(dmcongviecId);
         $.ajax({
-            url: "/qlcongviec/dmcongviec/" + dmcongviecId + "/edit",
+            url: "/system/qlcongviec/dmcongviec/" + dmcongviecId + "/edit",
             method: "GET",
             success: function (response) {
+                console.log(response);
                 $(".edit-name").val(response.dmcv.ten_cong_viec);
-                // $(".id-cv").val(response.dmcv.id);
                 $("#formUpdateDMCV-listListForm").attr(
                     "action",
-                    "/qlcongviec/dmcongviec/" + dmcongviecId,
+                    "/system/qlcongviec/dmcongviec/" + dmcongviecId,
                 );
-                //gán userId vào nút submit để sử dụng khi cập nhật
-                // $(".id_hidden").data("cv-id", response.dmcv.id);
-                var myOffcanvas = new bootstrap.Offcanvas(
-                    $("#offcanvasEditDMCV")[0],
+
+                let dmSelect = $("#dmEditSelect");
+                dmSelect.empty();
+                dmSelect.append(
+                    '<option value="0">--- Chọn đơn vị ---</option>',
                 );
+                if (response.allDonVi) {
+                    response.allDonVi.forEach(function (donVi) {
+                        let selected =
+                            donVi.id === response.dmcv.don_vi_id
+                                ? "selected"
+                                : "";
+
+                        dmSelect.append(
+                            `<option value="${donVi.id}" ${selected}>${donVi.ten_don_vi}</option>`,
+                        );
+                    });
+                }
+
+                var el = document.getElementById("offcanvasEditDMCV");
+                var myOffcanvas = bootstrap.Offcanvas.getOrCreateInstance(el);
                 myOffcanvas.show();
             },
             error: function (xhr) {

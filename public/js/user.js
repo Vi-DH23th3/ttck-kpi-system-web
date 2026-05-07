@@ -9,9 +9,10 @@ $(document).ready(function () {
         let pagrams = new URLSearchParams(window.location.search); // Sử dụng URLSearchParams để lấy tham số từ URL
         let currentPage = pagrams.get("page") || 1; // Lấy giá trị của tham số 'page' từ URL, nếu không có thì mặc định là 1
         $.ajax({
-            url: "/users?page=" + currentPage,
+            url: "/admin/users?page=" + currentPage,
             method: "GET",
             success: function (response) {
+                console.log("Dữ liệu AJAX trả về:", response);
                 $(".table-user").html(response); // Cập nhật lại phần table với dữ liệu mới
             },
         });
@@ -19,9 +20,10 @@ $(document).ready(function () {
 
     // Sử dụng jQuery để xử lý sự kiện click trên nút "Edit"
     $(document).on("click", ".btn_edit_user", function () {
+        let url = $(this).data("url");
         let userId = $(this).data("user-id");
         $.ajax({
-            url: "/users/" + userId + "/edit",
+            url: url,
             method: "GET",
             success: function (response) {
                 //console.log("Dữ liệu nhận được từ server:", response);
@@ -29,7 +31,7 @@ $(document).ready(function () {
                 $(".edit-email").val(response.user.email);
                 $("#role").val(response.user.role);
                 $("#trangthai").val(response.user.trang_thai);
-                let donViSelect = $("#don_vi_edit");
+                let donViSelect = $(".edit-donvi");
                 donViSelect.empty(); // Xóa các tùy chọn hiện tại
                 response.donVis.forEach(function (donVi) {
                     let selected =
@@ -49,6 +51,7 @@ $(document).ready(function () {
                         `<option value="${chucVu.id}" ${selected}>${chucVu.ten_chuc_vu}</option>`,
                     );
                 });
+
                 //gán userId vào nút submit để sử dụng khi cập nhật
                 $(".edit-submit").data("user-id", response.user.id);
                 var myOffcanvas = new bootstrap.Offcanvas(
@@ -66,64 +69,76 @@ $(document).ready(function () {
         e.preventDefault(); // Ngăn chặn việc submit form truyền thống
         let userId = $(this).data("user-id");
         let formData = {
-            name: $("#edit-name").val(),
-            email: $("#edit-email").val(),
-            chuc_vu: $("#chuc_vu").val(),
-            role: $("#role").val(),
+            name: $(".edit-name").val(),
+            email: $(".edit-email").val(),
+            chuc_vu_id: $("#chuc_vu").val(),
+            role: $(".edit-role").val(),
             trang_thai: $("#trangthai").val(),
-            don_vi_id: $("#don_vi_edit").val(),
+            don_vi_id: $(".edit-donvi").val(),
         };
-        $.ajax({
-            _token: $('meta[name="csrf-token"]').attr("content"),
-            url: "/users/" + userId,
-            method: "PUT",
-            data: formData,
-            success: function (response) {
-                fetchUser(); // Gọi hàm fetchUser sau khi cập nhật người dùng thành công để cập nhật lại bảng người dùng
-                let offcanvasElement =
-                    document.getElementById("offcanvasEditUser");
-                let instance =
-                    bootstrap.Offcanvas.getInstance(offcanvasElement);
+        Swal.fire({
+            icon: "info",
+            title: "Xác nhận",
+            confirm: true,
+            text: "Xác nhận cập nhật tài khoản này!",
+            showCancelButton: true,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.showLoading();
 
-                if (instance) {
-                    instance.hide();
-                }
-                //alert("Cập nhật người dùng thành công!");
-                Swal.fire({
-                    icon: "success",
-                    title: "Thành công",
-                    text: "Cập nhật người dùng thành công!",
-                    timer: 3000,
-                    showConfirmButton: false,
-                    timerProgressBar: true,
+                $.ajax({
+                    // _token: $('meta[name="csrf-token"]').attr("content"),
+                    url: "/admin/users/" + userId,
+                    method: "PUT",
+                    data: formData,
+                    success: function (response) {
+                        fetchUser(); // Gọi hàm fetchUser sau khi cập nhật người dùng thành công để cập nhật lại bảng người dùng
+                        let offcanvasElement =
+                            document.getElementById("offcanvasEditUser");
+                        let instance =
+                            bootstrap.Offcanvas.getInstance(offcanvasElement);
+
+                        if (instance) {
+                            instance.hide();
+                        }
+                        //alert("Cập nhật người dùng thành công!");
+                        Swal.fire({
+                            icon: "success",
+                            title: "Thành công",
+                            text: "Cập nhật người dùng thành công!",
+                            timer: 3000,
+                            showConfirmButton: false,
+                            timerProgressBar: true,
+                        });
+                    },
+                    // Tải lại trang để hiển thị dữ liệu mới
+                    error: function (xhr) {
+                        if (xhr.status === 422) {
+                            let errors = xhr.responseJSON.errors;
+                            let message = "";
+                            $.each(errors, function (key, value) {
+                                message += value[0] + "\n";
+                            });
+                            Swal.fire({
+                                icon: "error",
+                                title: "Lỗi",
+                                text: message,
+                                timer: 3000,
+                                showConfirmButton: true,
+                                timerProgressBar: false,
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Lỗi",
+                                text:
+                                    "Đã xảy ra lỗi khi cập nhật người dùng. Vui lòng thử lại." +
+                                    xhr.responseJSON.message,
+                            });
+                        }
+                    },
                 });
-            },
-            // Tải lại trang để hiển thị dữ liệu mới
-            error: function (xhr) {
-                if (xhr.status === 422) {
-                    let errors = xhr.responseJSON.errors;
-                    let message = "";
-                    $.each(errors, function (key, value) {
-                        message += value[0] + "\n";
-                    });
-                    Swal.fire({
-                        icon: "error",
-                        title: "Lỗi",
-                        text: message,
-                        timer: 3000,
-                        showConfirmButton: false,
-                        timerProgressBar: true,
-                    });
-                } else {
-                    Swal.fire({
-                        icon: "error",
-                        title: "Lỗi",
-                        text:
-                            "Đã xảy ra lỗi khi cập nhật người dùng. Vui lòng thử lại." +
-                            xhr.responseJSON.message,
-                    });
-                }
-            },
+            }
         });
     });
     // Xử lý sự kiện click trên nút "Thêm" trong form thêm người dùng
@@ -132,84 +147,74 @@ $(document).ready(function () {
         let formData = {
             name: $(".add-name").val(),
             email: $(".add-email").val(),
-            chucvu: $("#chuc_vu_add").val(),
+            chuc_vu_id: $("#chuc_vu_add").val(),
             role: $(".add-role").val(),
             don_vi_id: $(".add-donvi").val(),
             password: $(".add-password").val(),
         };
-        $.ajax({
-            _token: $('meta[name="csrf-token"]').attr("content"),
-            url: "/users",
-            method: "POST",
-            data: formData,
-            success: function (response) {
-                fetchUser(); // Gọi hàm fetchUser sau khi thêm người dùng thành công để cập nhật lại bảng người dùng
-                let offcanvasElement =
-                    document.getElementById("offcanvasAddUser");
-                let instance =
-                    bootstrap.Offcanvas.getInstance(offcanvasElement);
-                if (instance) {
-                    instance.hide();
-                }
-                //alert("Thêm người dùng thành công!");
-                Swal.fire({
-                    icon: "success",
-                    title: "Thành công",
-                    text: "Thêm người dùng thành công!",
-                    timer: 3000,
-                    showConfirmButton: false,
-                    timerProgressBar: true,
-                });
-            },
-            error: function (xhr) {
-                if (xhr.status === 422) {
-                    // 200 → success
-                    // 422 → validation error
-                    // 500 → system error
-                    let errors = xhr.responseJSON.errors;
-                    let message = "";
-                    $.each(errors, function (key, value) {
-                        message += value[0] + "\n";
-                    });
+        Swal.fire({
+            icon: "info",
+            title: "Xác nhận",
+            text: "Xác nhận thêm tài khoản!",
+            showCancelButton: true,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.showLoading();
 
-                    Swal.fire({
-                        icon: "error",
-                        title: "Lỗi",
-                        text: message,
-                    });
-                } else {
-                    Swal.fire({
-                        icon: "error",
-                        title: "Lỗi",
-                        text:
-                            "Đã xảy ra lỗi khi cập nhật người dùng. Vui lòng thử lại." +
-                            xhr.responseJSON.message,
-                    });
-                }
-            },
+                $.ajax({
+                    // _token: $('meta[name="csrf-token"]').attr("content"),
+                    url: "/admin/users",
+                    method: "POST",
+                    data: formData,
+                    success: function (response) {
+                        fetchUser();
+                        let offcanvasElement =
+                            document.getElementById("offcanvasAddUser");
+                        let instance =
+                            bootstrap.Offcanvas.getInstance(offcanvasElement);
+                        if (instance) {
+                            instance.hide();
+                        }
+                        //alert("Thêm người dùng thành công!");
+                        Swal.fire({
+                            icon: "success",
+                            title: "Thành công",
+                            text: "Thêm người dùng thành công!",
+                            timer: 3000,
+                            showConfirmButton: false,
+                            timerProgressBar: true,
+                        });
+                    },
+                    error: function (xhr) {
+                        if (xhr.status === 422) {
+                            // 200 → success
+                            // 422 → validation error
+                            // 500 → system error
+                            let errors = xhr.responseJSON.errors;
+                            let message = "";
+                            $.each(errors, function (key, value) {
+                                message += value[0] + "\n";
+                            });
+
+                            Swal.fire({
+                                icon: "error",
+                                title: "Lỗi",
+                                text: message,
+                                showConfirmButton: true,
+                                timerProgressBar: false,
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Lỗi",
+                                text:
+                                    "Đã xảy ra lỗi khi thêm người dùng. Vui lòng thử lại." +
+                                    xhr.responseJSON.message,
+                            });
+                        }
+                    },
+                });
+            }
         });
-    });
-    // Xử lý sự kiện click trên nút "Delete"
-    $(document).on("click", ".btn_delete_user", function (e) {
-        e.preventDefault();
-        let userId = $(this).data("user-id");
-        if (confirm("Bạn có chắc chắn muốn xóa người dùng này?")) {
-            $.ajax({
-                _token: $('meta[name="csrf-token"]').attr("content"),
-                url: "/users/" + userId,
-                method: "DELETE",
-                success: function (response) {
-                    fetchUser(); // Gọi hàm fetchUser sau khi xóa người dùng thành công để cập nhật lại bảng người dùng
-                    Swal.fire({
-                        icon: "success",
-                        title: "Thành công",
-                        text: "Xóa người dùng thành công!",
-                        timer: 3000,
-                        showConfirmButton: false,
-                        timerProgressBar: true,
-                    });
-                },
-            });
-        }
     });
 });

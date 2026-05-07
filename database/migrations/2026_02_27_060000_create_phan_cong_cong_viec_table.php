@@ -14,14 +14,19 @@ return new class extends Migration
         Schema::create('phan_cong_cong_viec', function (Blueprint $table) {
             
             $table->id();
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('kpi_id')->constrained('thu_vien_kpi')->onDelete('cascade');
+            $table->string('loai_kpi')->default('don_gian'); 
+            $table->integer('so_lan_toi_thieu_thang')->nullable();  // ví dụ: 1 lần/tháng (nếu có)
+            $table->integer('chu_ky_thang')->nullable(); // ví dụ:1 tháng/lần hoặc 3 tháng/lần (nếu có)
+            $table->json('dieu_kien_phu')->nullable(); // ví dụ: {"sv_moi_lop": 15}
+            $table->boolean('cho_phep_bu')->default(false);  // có cho bù sang năm sau không
+            $table->integer('nguong_duoc_bu')->nullable(); // đạt tối thiểu bao nhiêu mới được bù
             $table->date('ngay_bat_dau');
             $table->date('ngay_ket_thuc');
-            $table->string('trang_thai')->default('chua_bat_dau'); //chua_bat_dau, dang_thuc_hien, da_hoan_thanh, qua_han
+            $table->foreignId('nam_hoc_id')->constrained('nam_hoc')->onDelete('cascade');
             $table->string('ghi_chu')->nullable();
-            $table->integer('muc_do_uu_tien')->default(1); // 1: Thấp, 2: Trung bình, 3: Cao
             $table->foreignId('user_phan_cong_id')->nullable()->constrained('users')->nullOnDelete();
+            $table->string('trang_thai')->default('chua_bat_dau'); 
             $table->softDeletes();
             $table->timestamps();
         });

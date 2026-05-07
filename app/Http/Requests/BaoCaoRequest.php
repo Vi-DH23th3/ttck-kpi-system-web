@@ -11,7 +11,7 @@ class BaoCaoRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,10 +22,11 @@ class BaoCaoRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'phan_cong_cong_viec_id' => 'required|exists:phan_cong_cong_viec,id',
+            'phan_cong_cong_viec_id' => 'required|exists:chi_tiet_phan_cong,id',
             'tien_do' => 'required|integer|min:0|max:100', 
-            'file_minh_chung' => 'required|file|mimes:pdf,doc,docx,jpg,png|max:2048',
+            'file_minh_chung' => 'nullable|file|mimes:pdf,doc,docx,jpg,png|max:2048',
             'ngay_bao_cao' => 'required|date', 
+            'ghi_chu' => 'nullable|string|max:1000',
         ];
     }
 
@@ -38,12 +39,22 @@ class BaoCaoRequest extends FormRequest
             'tien_do.integer' => 'Tiến độ phải là một con số',
             'tien_do.min' => 'Tiến độ không được nhỏ hơn 0',
             'tien_do.max' => 'Tiến độ không được vượt quá 100%',
-            'file_minh_chung.required' => 'Bạn phải tải lên file minh chứng cho báo cáo này',
             'file_minh_chung.file' => 'Dữ liệu tải lên phải là một tập tin',
             'file_minh_chung.mimes' => 'File minh chứng chỉ chấp nhận định dạng: pdf, doc, docx, jpg, png',
             'file_minh_chung.max' => 'Dung lượng file không được vượt quá 2MB',
             'ngay_bao_cao.required' => 'Hãy chọn ngày báo cáo',
             'ngay_bao_cao.date' => 'Ngày báo cáo không đúng định dạng ngày tháng',
         ];
+    }
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            if (!$this->file('file_minh_chung') && !$this->ghi_chu) {
+                $validator->errors()->add(
+                    'file_minh_chung',
+                    'Bạn phải cung cấp file minh chứng hoặc ghi chú'
+                );
+            }
+        });
     }
 }

@@ -18,6 +18,7 @@ return new class extends Migration
             $table->integer('trang_thai')->default(1); // 1: Kích hoạt, 0: Vô hiệu hóa
             $table->string('avatar')->nullable()->after('id');
             $table->integer('must_change_password')->default(0)->after('trang_thai'); // 0: không bắt buộc, 1: bắt buộc đổi mật khẩu sau khi đăng nhập lần đầu
+            $table->string('google_id', 255)->nullable();
             $table->softDeletes();
         });
     }

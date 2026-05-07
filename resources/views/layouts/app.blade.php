@@ -13,7 +13,7 @@
         <!-- Scripts -->
         <style>
             body {
-                background-color: #d5d8d8ff;
+                background-color:#bfdbf0ff;
             }
         </style>
     </head>
