@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
     //ĐA CHỈ TIÊU
-    // 1. Thêm chỉ tiêu
+    // Thêm chỉ tiêu
     const container = document.getElementById("dynamic-rules-container");
     const btnAdd = document.getElementById("add-rule-btn");
     const template = document.getElementById("rule-row-template");
@@ -9,10 +9,9 @@ document.addEventListener("DOMContentLoaded", function () {
         const clone = template.content.cloneNode(true);
         container.appendChild(clone);
     });
-    // 2. Hàm xóa dòng
+    //Hàm xóa dòng
     container.addEventListener("click", function (e) {
         if (e.target.classList.contains("btn-remove-rule")) {
-            // Tìm đến thẻ div.rule-row gần nhất để xóa
             e.target.closest(".rule-row").remove();
         }
     });
@@ -59,7 +58,6 @@ document.addEventListener("DOMContentLoaded", function () {
     document
         .getElementById("btn-review")
         .addEventListener("click", function () {
-            // ===== 1. Lấy dữ liệu cơ bản =====
             let ten = document.getElementById("kpiSelector").value;
             let chiTieu = document.getElementById("target_chi_tieu").value;
             let donVi = document.getElementById("target_don_vi").value;
@@ -75,7 +73,7 @@ document.addEventListener("DOMContentLoaded", function () {
             let mucDo = document.querySelector("[name='muc_do']").value;
             let ghiChu = document.querySelector("[name='ghi_chu']").value;
 
-            // ===== 2. Render cơ bản =====
+            //2. Render cơ bản
             document.getElementById("preview-ten_kpi").innerText =
                 ten || "Chưa nhập";
             document.getElementById("preview-chi_tieu").innerText =
@@ -98,11 +96,10 @@ document.addEventListener("DOMContentLoaded", function () {
             document.getElementById("preview-muc_do").innerText = mucDo;
             document.getElementById("preview-ghi_chu").innerText = ghiChu;
 
-            //tần suất
             let html = "";
 
             if (loai === "nang_cao") {
-                // ---- tần suất ----
+                //KPI nâng cao
                 let soLan = document.querySelector(
                     "[name='so_lan_toi_thieu_thang']",
                 ).value;
@@ -116,7 +113,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 Tần suất: tối thiểu ${soLan} lần / ${chuKyThang} tháng
             </div>`;
                 }
-                // ---- bù nợ ----
+                //Phần cho phép bù
                 let choBu = document.getElementById("cho_phep_bu").checked;
                 let nguong = document.querySelector(
                     "[name='nguong_duoc_bu']",
@@ -186,9 +183,10 @@ document.addEventListener("DOMContentLoaded", function () {
         btn.addEventListener("click", function () {
             let index = this.dataset.index;
             $.ajax({
-                url: "/giaochitieu/" + index,
+                url: "/manager/giaochitieu/" + index,
                 method: "GET",
                 success: function (res) {
+                    // console.log(res);
                     let formData = {
                         index: index,
                         danh_muc: res.danh_muc,
@@ -248,7 +246,6 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             renderRules(res.dieu_kien || []);
-            // document.querySelector('[data-bs-target="#thucong"]')?.click();
         }
     }
     document.querySelectorAll('input[name="loai_kpi"]').forEach((el) => {

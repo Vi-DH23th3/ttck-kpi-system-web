@@ -140,8 +140,8 @@ class GiaoKPIController extends Controller
                     {
                         $chi_tieu = 0;
                         $don_vi   = 'tham_chieu';
-                        $chu_ky   = 'tuy_chinh';
-                        $ghi_chu = "Chỉ tiêu tham chiếu: "  . $ghi_chu;
+                        $chu_ky   = '';
+                        $ghi_chu = "Chỉ tiêu tham chiếu: "  . $kpi;
                         $danhDau = true;
                     }
                     $data_import[] = [
@@ -158,7 +158,7 @@ class GiaoKPIController extends Controller
             }
             session(['kpi_import' => $data_import]);
             DB::commit();
-            return redirect()->route('qlcongviec.giaochitieu')->with([
+            return redirect()->route('manager.qlcongviec.giaochitieu')->with([
                                     'success' => 'Import file thành công',
                                     'tab' => 'importfile'
                                 ]);

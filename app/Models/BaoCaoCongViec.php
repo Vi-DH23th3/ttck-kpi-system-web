@@ -14,12 +14,12 @@ class BaoCaoCongViec extends Model
         'gia_tri_thuc_te' => 'array',
     ];
     public function chiTietPhanCong() {
-        return $this->belongsTo(ChiTietPhanCong::class, 'chi_tiet_phan_cong_id');
+        return $this->belongsTo(ChiTietPhanCong::class, 'chi_tiet_phan_cong_id')->withTrashed();
     }
     public function user() {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class, 'user_id')->withTrashed();
     }
     public function userDuyet() {
-        return $this->belongsTo(User::class, 'user_duyet_id');
+        return $this->belongsTo(User::class, 'user_duyet_id')->withTrashed();
     }
 }

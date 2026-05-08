@@ -21,12 +21,14 @@ class BaoCaoRequest extends FormRequest
      */
     public function rules(): array
     {
+        $isDaChiTieu = $this->has('gia_tri_thuc_te');
         return [
             'phan_cong_cong_viec_id' => 'required|exists:chi_tiet_phan_cong,id',
-            'tien_do' => 'required|integer|min:0|max:100', 
+            'tien_do' => $isDaChiTieu ? 'nullable' : 'required|integer|min:0|max:100',
             'file_minh_chung' => 'nullable|file|mimes:pdf,doc,docx,jpg,png|max:2048',
             'ngay_bao_cao' => 'required|date', 
             'ghi_chu' => 'nullable|string|max:1000',
+            'gia_tri_thuc_te' => $isDaChiTieu ? 'required|array' : 'nullable',
         ];
     }
 
@@ -42,8 +44,7 @@ class BaoCaoRequest extends FormRequest
             'file_minh_chung.file' => 'Dữ liệu tải lên phải là một tập tin',
             'file_minh_chung.mimes' => 'File minh chứng chỉ chấp nhận định dạng: pdf, doc, docx, jpg, png',
             'file_minh_chung.max' => 'Dung lượng file không được vượt quá 2MB',
-            'ngay_bao_cao.required' => 'Hãy chọn ngày báo cáo',
-            'ngay_bao_cao.date' => 'Ngày báo cáo không đúng định dạng ngày tháng',
+            'gia_tri_thuc_te.required' => 'Vui lòng nhập giá trị đạt được ở mỗi chỉ tiêu',
         ];
     }
     public function withValidator($validator)

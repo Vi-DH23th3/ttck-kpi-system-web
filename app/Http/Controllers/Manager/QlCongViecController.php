@@ -40,7 +40,7 @@ class QlCongViecController extends Controller
         $user = $queryUser->get();
         $duLieu = $locPhanCongService->locTheoDieuKien($request);
         $chiTiet = $duLieu->chiTiet;
-        $dsPhanCong = $chiTiet->filter( function ($item)  {
+        $dsPhanCong = $chiTiet->filter(function ($item)  {
             if (Auth::user()->role == 'manager') {
                 return $item->nguoiDuocGiao && $item->nguoiDuocGiao->don_vi_id == Auth::user()->don_vi_id;
             }
@@ -129,8 +129,9 @@ class QlCongViecController extends Controller
                         'tong_nhan_vien' => $tongNhanVien,
                         'tong_kpi' => $tongKPI,
                         'dat' => $dat,
-                        'qua_han' => $quaHan,
                         'tien_do' => $tienDo,
+                        'qua_han' => $quaHan,
+                        
                     ];
                 });
             return Excel::download(new KPIExport([
@@ -213,7 +214,6 @@ class QlCongViecController extends Controller
             $ghichutl = " - Lý do trả lại báo cáo]: " . $request->ghi_chu_tl;
                     
             $baoCao->update([
-                'tien_do_thuc' => 0,
                 'trangthai_duyet' => 'tra_lai',
                 'user_duyet_id' => Auth::id(),
                 'ly_do_tra_lai' => $ghichutl,

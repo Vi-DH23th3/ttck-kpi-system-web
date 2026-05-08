@@ -57,7 +57,7 @@ class User extends Authenticatable
     }
     public function donVi()
     {
-        return $this->belongsTo(DonVi::class, 'don_vi_id');
+        return $this->belongsTo(DonVi::class, 'don_vi_id')->withTrashed();
     }
     public function chucVu()
     {

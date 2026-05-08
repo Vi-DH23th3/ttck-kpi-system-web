@@ -56,7 +56,7 @@ class CanhBaoKPIService
             }
 
             if ($trangThai === 'chua_dat') {
-                return $quaHan  ? "Quá hạn: chưa đạt chỉ tiêu"  : "Chưa đạt chỉ tiêu";
+                return "Chưa đạt chỉ tiêu";
             }
 
             return implode("\n", $warnings);

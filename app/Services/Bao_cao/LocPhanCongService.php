@@ -30,19 +30,19 @@ class LocPhanCongService
                     $q2->where('ngay_bat_dau', '<=', $nh->ngay_bat_dau)
                         ->where('ngay_ket_thuc', '>=', $nh->ngay_ket_thuc);
                 });
-        });
+        })->withTrashed();
         if ($request->filled('filter_pb') && $request->filter_pb !== 'all') {
             $query->whereHas('chiTietPhanCong.nguoiDuocGiao', function ($q) use ($request) {
                 $q->where('don_vi_id', $request->filter_pb);
-            });
+            })->withTrashed();
         }
         if ($request->filled('filter_trangthai')) {
-            $query->where('trang_thai', $request->filter_trangthai);
+            $query->where('trang_thai', $request->filter_trangthai)->withTrashed();
         }
         if ($request->filled('filter_nv') && $request->filter_nv !== 'all') {
             $query->whereHas('chiTietPhanCong', function ($q) use ($request) {
                 $q->where('user_id', $request->filter_nv);
-            });
+            })->withTrashed();
         }
 
         return (object)[

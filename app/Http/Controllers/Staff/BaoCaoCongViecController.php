@@ -25,7 +25,13 @@ class BaoCaoCongViecController extends Controller
             if ($coChoDuyet) {
                 throw new \Exception("Vui lòng chờ duyệt báo cáo cũ trước khi nộp mới.");
             }
-            $chiTiet = ChiTietPhanCong::find($request->phan_cong_cong_viec_id);
+
+            $chiTiet = ChiTietPhanCong::where('id', $request->phan_cong_cong_viec_id)
+                                        ->where('user_id', Auth::id())
+                                        ->firstOrFail();
+            if (!$chiTiet) {
+                throw new \Exception('Không tìm thấy công việc hoặc không có quyền truy cập');
+            }
             $path = '';
             $ghichu = '';
             if($request->has('ghi_chu')){

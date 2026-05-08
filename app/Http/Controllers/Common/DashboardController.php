@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Common;
 
 use App\Http\Controllers\Controller;
 use App\Models\BaoCaoCongViec;
+use App\Models\ChiTietPhanCong;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\DonVi;
@@ -64,14 +65,26 @@ class DashboardController extends Controller
         });
 
         //lấy top nhân viên
-        $topNhanVien = $tk_kpi->where('trang_thai_tinh', 'da_hoan_thanh')->groupBy('user_id')->map(function ($group){
-            return[
-                'avatar' =>$group->first()->nguoiDuocGiao->avatar ?? '',
-                'ten_nv' => $group->first()->ten_nv,
-                'so_luong' => $group->count()
-            ];
-        })->sortByDesc('so_luong')->take(5);
-        
+        // $topNhanVien = ChiTietPhanCong::where('trang_thai', 'da_hoan_thanh')->groupBy('user_id')->get()->map(function ($group){
+        //     return[
+        //         'avatar' =>$group->first()->nguoiDuocGiao->avatar ?? '',
+        //         'ten_nv' => $group->first()->ten_nv,
+        //         'so_luong' => $group->count()
+        //     ];
+        // })->sortByDesc('so_luong')->take(5); 
+        $topNhanVien = ChiTietPhanCong::with('nguoiDuocGiao')
+            ->where('trang_thai', 'da_hoan_thanh')
+            ->get()
+            ->groupBy('user_id')
+            ->map(function ($group) {
+                return [
+                    'avatar' => $group->first()->nguoiDuocGiao->avatar ?? '',
+                    'ten_nv' => $group->first()->nguoiDuocGiao->name ?? 'N/A',
+                    'so_luong' => $group->count()
+                ];
+            })
+            ->sortByDesc('so_luong')
+            ->take(5);
         $hoatDongGanDay = BaoCaoCongViec::with([
                             'chiTietPhanCong.phanCong.thuVienKPI',
                             'user'

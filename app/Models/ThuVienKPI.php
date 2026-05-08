@@ -12,10 +12,8 @@ class ThuVienKPI extends Model
     protected $fillable = ['ten_kpi', 'chi_tieu', 'don_vi', 'chu_ky', 'dm_cv_id', 'ghi_chu'];
     public function danhMuc()
     {
-        return $this->belongsTo(DanhMucCongViec::class, 'dm_cv_id');
+        return $this->belongsTo(DanhMucCongViec::class, 'dm_cv_id')->withTrashed();
     }
-
-   
 
     public function phanCong()
     {

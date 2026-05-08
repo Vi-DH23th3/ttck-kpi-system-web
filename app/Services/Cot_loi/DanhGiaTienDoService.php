@@ -35,15 +35,22 @@ class DanhGiaTienDoService{
         $nbd = Carbon::parse($phanCong->ngay_bat_dau);
         $nkt = Carbon::parse($phanCong->ngay_ket_thuc);
         $chiTiet->tong_ngay = $nbd->diffInDays($nkt) + 1;
-
+        $thoiDiemHoanThanh = optional(
+                            $chiTiet->baoCaoCongViec()
+                                ->where('trangthai_duyet', 'da_duyet')
+                                ->latest('ngay_thuc_hien')
+                                ->first()
+                        )->ngay_thuc_hien;
         if ($now->lessThan($nbd)) {
             $chiTiet->ngay_hien_tai = 0;
         } else {
-            $chiTiet->ngay_hien_tai = $nbd->diffInDays($now) + 1;
-            
-            if ($trang_thai_tinh == 'da_hoan_thanh') {
-                $chiTiet->ngay_hien_tai = $nbd->diffInDays($chiTiet->updated_at) + 1;
+
+            $endPoint = $now;
+            if ($trang_thai_tinh == 'da_hoan_thanh' && $thoiDiemHoanThanh) {
+                $endPoint = Carbon::parse($thoiDiemHoanThanh);
             }
+
+            $chiTiet->ngay_hien_tai = $nbd->diffInDays($endPoint) + 1;
         }
         $tienDoDuKien = 0;
        
@@ -71,14 +78,29 @@ class DanhGiaTienDoService{
         }
 
         if ($trang_thai_tinh == 'da_hoan_thanh') {
-            $deadline = $chiTiet->lo_ngay ? 'Hoàn thành muộn' : 'Hoàn thành trước hạn';
+            if (!$thoiDiemHoanThanh) {
+                $deadline = 'Hoàn thành';
+            } else {
+
+                $ht = Carbon::parse($thoiDiemHoanThanh)->startOfDay();
+                $kt = $nkt->startOfDay();
+
+                if ($ht->lt($kt)) {
+                    $deadline = 'Hoàn thành trước hạn';
+                } elseif ($ht->eq($kt)) {
+                    $deadline = 'Hoàn thành đúng hạn';
+                } else {
+                    $deadline = 'Hoàn thành muộn';
+                }
+            }
         } else {
-            $deadline = $chiTiet->lo_ngay ? 'Quá hạn' : 'Đang thực hiện';
-            if($phanCong->ngay_bat_dau > $now){
+
+            if ($phanCong->ngay_bat_dau > $now) {
                 $deadline = 'Chưa bắt đầu';
+            } else {
+                $deadline = $chiTiet->lo_ngay ? 'Quá hạn' : 'Đang thực hiện';
             }
         }
-
 
         $canhBao = $this->canhBaoService->taoCanhBao($phanCong, $chiTiet);
 

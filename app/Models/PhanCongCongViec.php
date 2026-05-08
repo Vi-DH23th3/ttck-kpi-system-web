@@ -15,7 +15,7 @@ class PhanCongCongViec extends Model
     ];
     public function thuVienKPI() //phân công cv n-1 kpi, kpi_id là khóa ngoại 
     {
-        return $this->belongsTo(ThuVienKPI::class, 'kpi_id');
+        return $this->belongsTo(ThuVienKPI::class, 'kpi_id')->withTrashed();
     }
     public function chiTietPhanCong()
     {
@@ -23,11 +23,11 @@ class PhanCongCongViec extends Model
     }
 
     public function nguoiPhanCong() {
-        return $this->belongsTo(User::class, 'user_phan_cong_id');
+        return $this->belongsTo(User::class, 'user_phan_cong_id')->withTrashed();
     }
 
     public function namHoc()
     {
-        return $this->belongsTo(NamHoc::class, 'nam_hoc_id');
+        return $this->belongsTo(NamHoc::class, 'nam_hoc_id')->withTrashed();
     }
 }

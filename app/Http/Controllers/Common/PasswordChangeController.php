@@ -21,7 +21,7 @@ class PasswordChangeController extends Controller
             'new_password.confirmed' => 'Mật khẩu xác nhận không khớp với mật khẩu mới.',
             'new_password.min' => 'Mật khẩu phải từ 8 ký tự trở lên.',
         ]);
-        $user = Auth::user();
+        $user = User::find(Auth::id());
         if (!Hash::check($request->old_password, $user->password)) {
             return back()->with('error','old_password: Mật khẩu hiện tại không chính xác.');
         }

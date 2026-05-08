@@ -12,7 +12,7 @@ class DanhMucCongViec extends Model
      protected $fillable = ['ten_cong_viec', 'don_vi_id'];
      public function donVi()
     {
-        return $this->belongsTo(DonVi::class, 'don_vi_id');
+        return $this->belongsTo(DonVi::class, 'don_vi_id')->withTrashed();
     }
     public function thuVienKPI()
     {

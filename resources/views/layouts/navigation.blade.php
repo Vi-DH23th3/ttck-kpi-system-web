@@ -40,7 +40,6 @@
                         </li>
                     </ul>
                     <div class="me-3 text-end d-none d-sm-block p-3">
-                        <!-- <small class="d-block text-secondary">Xin chào,</small> -->
                         <span class="fw-bold"><a href="{{route('profile.index',Auth::user()->id)}}">{{ Auth::user()->name }}</a></span>
                     </div>
                     <form method="POST" action="{{ route('logout') }}">

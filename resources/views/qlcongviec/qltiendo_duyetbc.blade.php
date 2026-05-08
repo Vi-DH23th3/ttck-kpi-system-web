@@ -8,22 +8,14 @@
        <div class="row m-2">
             <div class="col-md-3">
                 <h5 class="card-header"> <i class="bi bi-list-ul me-2" style="color: #3f51b5;"></i> Danh sách công việc</h5>
-                <form method="GET" class="d-inline-block mt-4 w-auto border-0">
-                    <select name="trangthai" class="form-select shadow-sm text-secondary border-secondary-subtle"
-                            style="font-size: 0.9rem; min-width: 200px;" onchange="this.form.submit()">
-                        <option value="tat_ca" {{ request('trangthai') == 'tat_ca' ? 'selected' : '' }}> -- Tất cả -- </option>
-                        <option value="da_hoan_thanh" {{ request('trangthai') == 'da_hoan_thanh' ? 'selected' : '' }}>Đã hoàn thành</option>
-                        <option value="dang_thuc_hien" {{ request('trangthai') == 'dang_thuc_hien' ? 'selected' : '' }}>Đang thực hiện</option>
-                        <option value="dang_no" {{ request('trangthai') == 'dang_no' ? 'selected' : '' }}>Đang nợ</option>
-                    </select>
-                </form>
+                    
             </div>
             <div class="col-md-9">
                 <div class="card shadow-sm border-0 mb-4" style="border-radius: 12px;">
                     <div class="card-body">
                         <form id="mainForm" action="{{ route('system.qlcongviec.index') }}" method="GET" class="row align-items-end g-3">
                             @csrf
-                            <div class="col-md-3">
+                            <div class="col-md-2">
                                 <label class="form-label fw-bold text-secondary small">Năm học</label>
                                 <select name="filter_nh" class="form-select border-2" onchange="this.form.submit()">
                                     @foreach($namhoc as $nh)
@@ -31,7 +23,16 @@
                                     @endforeach
                                 </select>
                             </div>
-    
+                            <div class="col-md-2">
+                                <label class="form-label fw-bold text-secondary small">Trạng thái</label>
+                                <select name="trangthai" class="form-select shadow-sm text-secondary border-secondary-subtle" onchange="this.form.submit()">
+                                    <option value="tat_ca" {{ request('trangthai') == 'tat_ca' ? 'selected' : '' }}> -- Tất cả -- </option>
+                                    <option value="da_hoan_thanh" {{ request('trangthai') == 'da_hoan_thanh' ? 'selected' : '' }}>Đã hoàn thành</option>
+                                    <option value="dang_thuc_hien" {{ request('trangthai') == 'dang_thuc_hien' ? 'selected' : '' }}>Đang thực hiện</option>
+                                    <option value="dang_no" {{ request('trangthai') == 'dang_no' ? 'selected' : '' }}>Đang nợ</option>
+                                    <option value="chua_dat" {{ request('trangthai') == 'chua_dat' ? 'selected' : '' }}>Chưa đạt</option>
+                                </select>
+                            </div>
                             <div class="col-md-3">
                                 <label class="form-label fw-bold text-secondary small">Phòng ban</label>
                                 <select name="filter_pb" class="form-select border-2" onchange="this.form.submit()">
@@ -52,7 +53,7 @@
                                 </select>
                             </div>
                             
-                            <div class="col-md-3 text-end">
+                            <div class="col-md-2 text-end">
                                 <button type="button" onclick="submitExport()" class="btn btn-success">
                                     <i class="bi bi-box-arrow-up-right"></i> Xuất Excel
                                 </button>

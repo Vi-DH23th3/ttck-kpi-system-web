@@ -16,7 +16,7 @@ class ChiTietPhanCong extends Model
         return $this->hasMany(BaoCaoCongViec::class, 'chi_tiet_phan_cong_id');
     }
     public function nguoiDuocGiao() {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class, 'user_id')->withTrashed();
     }
     public function baoCaoMoiNhat()
     {
@@ -24,6 +24,6 @@ class ChiTietPhanCong extends Model
     }
     public function phanCong()
     {
-        return $this->belongsTo(PhanCongCongViec::class, 'phan_cong_id');
+        return $this->belongsTo(PhanCongCongViec::class, 'phan_cong_id')->withTrashed();
     }
 }

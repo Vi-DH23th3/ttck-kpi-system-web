@@ -6,14 +6,14 @@ $.ajaxSetup({
 $(document).ready(function () {
     console.log("Script đã nạp thành công");
     function fetchUser() {
-        let pagrams = new URLSearchParams(window.location.search); // Sử dụng URLSearchParams để lấy tham số từ URL
-        let currentPage = pagrams.get("page") || 1; // Lấy giá trị của tham số 'page' từ URL, nếu không có thì mặc định là 1
+        let pagrams = new URLSearchParams(window.location.search); //lấy tham số từ URL
+        let currentPage = pagrams.get("page") || 1;
         $.ajax({
             url: "/admin/users?page=" + currentPage,
             method: "GET",
             success: function (response) {
                 console.log("Dữ liệu AJAX trả về:", response);
-                $(".table-user").html(response); // Cập nhật lại phần table với dữ liệu mới
+                $(".table-user").html(response);
             },
         });
     }
@@ -26,13 +26,12 @@ $(document).ready(function () {
             url: url,
             method: "GET",
             success: function (response) {
-                //console.log("Dữ liệu nhận được từ server:", response);
-                $(".edit-name").val(response.user.name); //val() là hàm của jQuery để đặt giá trị cho input;
+                $(".edit-name").val(response.user.name);
                 $(".edit-email").val(response.user.email);
                 $("#role").val(response.user.role);
                 $("#trangthai").val(response.user.trang_thai);
                 let donViSelect = $(".edit-donvi");
-                donViSelect.empty(); // Xóa các tùy chọn hiện tại
+                donViSelect.empty();
                 response.donVis.forEach(function (donVi) {
                     let selected =
                         donVi.id === response.user.don_vi_id ? "selected" : "";
@@ -41,7 +40,7 @@ $(document).ready(function () {
                     );
                 });
                 let chucVuSelect = $("#chuc_vu");
-                chucVuSelect.empty(); // Xóa các tùy chọn hiện tại
+                chucVuSelect.empty();
                 response.chucVu.forEach(function (chucVu) {
                     let selected =
                         chucVu.id === response.user.chuc_vu_id
@@ -52,7 +51,6 @@ $(document).ready(function () {
                     );
                 });
 
-                //gán userId vào nút submit để sử dụng khi cập nhật
                 $(".edit-submit").data("user-id", response.user.id);
                 var myOffcanvas = new bootstrap.Offcanvas(
                     $("#offcanvasEditUser")[0],
@@ -66,7 +64,7 @@ $(document).ready(function () {
     });
     // Xử lý sự kiện click trên nút "Submit" trong form chỉnh sửa
     $(".edit-submit").click(function (e) {
-        e.preventDefault(); // Ngăn chặn việc submit form truyền thống
+        e.preventDefault();
         let userId = $(this).data("user-id");
         let formData = {
             name: $(".edit-name").val(),
@@ -87,12 +85,11 @@ $(document).ready(function () {
                 Swal.showLoading();
 
                 $.ajax({
-                    // _token: $('meta[name="csrf-token"]').attr("content"),
                     url: "/admin/users/" + userId,
                     method: "PUT",
                     data: formData,
                     success: function (response) {
-                        fetchUser(); // Gọi hàm fetchUser sau khi cập nhật người dùng thành công để cập nhật lại bảng người dùng
+                        fetchUser();
                         let offcanvasElement =
                             document.getElementById("offcanvasEditUser");
                         let instance =
@@ -101,7 +98,6 @@ $(document).ready(function () {
                         if (instance) {
                             instance.hide();
                         }
-                        //alert("Cập nhật người dùng thành công!");
                         Swal.fire({
                             icon: "success",
                             title: "Thành công",
@@ -111,7 +107,6 @@ $(document).ready(function () {
                             timerProgressBar: true,
                         });
                     },
-                    // Tải lại trang để hiển thị dữ liệu mới
                     error: function (xhr) {
                         if (xhr.status === 422) {
                             let errors = xhr.responseJSON.errors;
@@ -162,7 +157,6 @@ $(document).ready(function () {
                 Swal.showLoading();
 
                 $.ajax({
-                    // _token: $('meta[name="csrf-token"]').attr("content"),
                     url: "/admin/users",
                     method: "POST",
                     data: formData,
@@ -175,7 +169,6 @@ $(document).ready(function () {
                         if (instance) {
                             instance.hide();
                         }
-                        //alert("Thêm người dùng thành công!");
                         Swal.fire({
                             icon: "success",
                             title: "Thành công",
@@ -187,9 +180,6 @@ $(document).ready(function () {
                     },
                     error: function (xhr) {
                         if (xhr.status === 422) {
-                            // 200 → success
-                            // 422 → validation error
-                            // 500 → system error
                             let errors = xhr.responseJSON.errors;
                             let message = "";
                             $.each(errors, function (key, value) {

@@ -68,9 +68,6 @@
                             </button>
                         </form>
                     @endif
-                    <!-- <button class="btn btn-sm btn-outline-danger border-0 btn_delete_user bg-light" data-user-id="{{ $user->id }}" title="Xóa">
-                        <i class="bi bi-trash"></i>
-                    </button> -->
                     @if(!$user->google_id)
                     <form method="POST" action="{{ route('admin.users.resetpass', $user->id)  }}">
                         @csrf

@@ -1,7 +1,6 @@
 <table class="table table-hover align-middle bg-white mb-0" style="font-size: 0.9rem;">
         <thead class="table-light">
             <tr class=" sticky-top" style="top: 0; z-index: 10;">
-                <th class="text-primary text-center py-3" style="width: 50px;">STT</th>
                 <th class="text-primary py-3" style="width: 25%;">KPI / Nhân viên</th>
                 <!-- <th class="text-primary text-center py-3">Loại</th> -->
                 <th class="text-primary text-center py-3" style="width: 20%;">Tiến độ KPI</th>
@@ -32,7 +31,7 @@
                 <td colspan="10" class="py-2 px-3">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <strong>{{$pcid}} {{ $list['ten_kpi'] }}</strong>
+                            <strong>{{ $list['ten_kpi'] }}</strong>
                             <span class="badge {{ $list['loai_kpi'] == 'don_gian' ? 'bg-secondary' : 'bg-info' }}">
                                 {{ $loai }} 
                             </span>
@@ -78,11 +77,9 @@
     
             @foreach($list['chi_tiet'] as $index => $dspc)
             <tr>
-                <td class="text-center text-muted"></td>
                 
                  <!-- KPI & Nhân viên -->
                 <td>
-                    <!-- <div class="fw-bold text-dark mb-1">{{ $dspc->id }} {{ $dspc->ten_kpi }}</div> -->
                     <div class="text-dark mb-2">
                         <i class="bi bi-person me-1"></i>{{ $dspc->ten_nv }}
                     </div>
@@ -125,7 +122,15 @@
 
                 <!-- Đánh giá -->
                 <td class="text-center">
-                    <span class="badge {{ $dspc->tien_do < $dspc->tien_do_ngay ? 'text-danger bg-danger-subtle' : 'text-primary bg-primary-subtle' }} border">
+                    @php
+                        if (str_contains($dspc->danh_gia, 'Bình thường'))
+                            $textColor = 'text-primary bg-primary-subtle';
+                        elseif(str_contains($dspc->danh_gia, 'Vượt'))
+                            $textColor = 'bg-success-subtle text-success';
+                        else
+                            $textColor = 'bg-danger-subtle text-danger';
+                    @endphp
+                    <span class="badge {{ $textColor }} border">
                         {{ $dspc->danh_gia }}
                     </span>
                 </td>
@@ -154,7 +159,7 @@
                 </td>
                 <td>
                     @php
-                        $bg_MacDinh = 'success'; 
+                        $bg_MacDinh = ' '; 
                         if (str_contains($dspc->canh_bao, 'Chưa đạt chu kỳ') || 
                             str_contains($dspc->canh_bao, 'Chưa đạt đa chỉ tiêu') || 
                             str_contains($dspc->canh_bao, 'Quá hạn')) {
@@ -171,6 +176,8 @@
                             $bg_MacDinh = 'secondary'; 
                         }elseif(str_contains($dspc->canh_bao, 'Đang đúng tiến độ'))
                             $bg_MacDinh='info';
+                        elseif(str_contains($dspc->canh_bao, 'Đã hoàn thành'))
+                            $bg_MacDinh='success';
                     @endphp
                     <span class="badge bg-{{ $bg_MacDinh }} py-2">
                         <!-- {{ $dspc->canh_bao }} -->
@@ -187,12 +194,6 @@
                                     data-cv-id="{{ $dspc->bao_cao_chua_duyet->first()->id }}">
                                 Phê duyệt
                             </button>
-                            <!-- <form action="{{ route('manager.qlcongviec.qltiendo.xembc', $dspc->bao_cao_chua_duyet->first()->id) }}">
-                                <button type="submit" class="btn btn-xs btn-outline-primary btn-xem-bao-cao mb-2" 
-                                    data-cv-id="{{ $dspc->bao_cao_chua_duyet->first()->id }}">
-                                Phê duyệt
-                            </button>
-                            </form> -->
                         @endif
                             <div class="modal fade" id="modalXemBaoCao" tabindex="-1" aria-hidden="true">
                     <div class="modal-dialog modal-lg modal-dialog-centered">

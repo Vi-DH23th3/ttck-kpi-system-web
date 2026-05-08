@@ -176,6 +176,13 @@ class TrangThaiKPIService
             }
         }
         if (!$quaHan) {
+
+            $coBaoCao = collect($danhSachDK)->contains(fn($dk) => $dk['pham_vi'] === 'bao_cao');
+
+            if ($coBaoCao) {
+                return 'dang_thuc_hien';
+            }
+
             return $tatCaDat ? 'da_hoan_thanh' : 'dang_thuc_hien';
         }
 

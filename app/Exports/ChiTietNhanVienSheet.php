@@ -40,11 +40,12 @@ class ChiTietNhanVienSheet implements FromCollection, WithHeadings
                 'Deadline' => $this->formatDeadline($cv),
 
                
-                'Lỗi tần suất' => str_contains($canhBao, 'Thiếu chu kỳ') ? 'X' : '',
-                'Lỗi đa chỉ tiêu' => str_contains($canhBao, 'đa chỉ tiêu') ? 'X' : '',
+                'Lỗi tần suất' => str_contains($canhBao, 'Chưa đạt chu kỳ') ? 'X' : '',
+                'Lỗi đa chỉ tiêu' => str_contains($canhBao, 'Chưa đạt đa chỉ tiêu') ? 'X' : '',
                 'Quá hạn' => str_contains($canhBao, 'Quá hạn') ? 'X' : '',
                 'Sắp hết hạn' => str_contains($canhBao, 'Sắp hết hạn') ? '!' : '',
-                'Đạt sớm' => str_contains($canhBao, 'Đã đạt chỉ tiêu') ? 'X' : '',
+                'Chưa đạt chỉ tiêu' => str_contains($canhBao, 'Chưa đạt chỉ tiêu') ? 'X' : '',
+                'Đạt ngưỡng bù' => str_contains($canhBao, 'Đạt ngưỡng bù') ? '✔' : '',
 
                 'Đánh giá' => $cv->danh_gia ?? '',
                 'Ưu tiên' => $this->formatUuTien($cv->phanCong->muc_do_uu_tien ?? 1),
@@ -72,7 +73,8 @@ class ChiTietNhanVienSheet implements FromCollection, WithHeadings
             'Lỗi đa chỉ tiêu',
             'Quá hạn',
             'Sắp hết hạn',
-            'Đạt sớm',
+            'Chưa đạt chỉ tiêu',
+            'Đạt ngưỡng bù',
             'Đánh giá',
             'Ưu tiên',
             'Nguyên nhân',
@@ -125,7 +127,7 @@ class ChiTietNhanVienSheet implements FromCollection, WithHeadings
         if (str_contains($canhBao, 'Chưa đạt chu kỳ')) {
             return 'Chưa đạt tần suất yêu cầu';
         }
-        if (str_contains($canhBao, 'đa chỉ tiêu')) {
+        if (str_contains($canhBao, 'Chưa đạt đa chỉ tiêu')) {
             return 'Chưa đạt toàn bộ tiêu chí KPI';
         }
         if (str_contains($canhBao, 'Quá hạn')) {
@@ -154,7 +156,7 @@ class ChiTietNhanVienSheet implements FromCollection, WithHeadings
         if (str_contains($canhBao, 'Chưa đạt chu kỳ')) {
             return 'Tiếp tục bổ sung báo cáo và duy trì tần suất thực hiện';
         }
-        if (str_contains($canhBao, 'đa chỉ tiêu')) {
+        if (str_contains($canhBao, 'Chưa đạt đa chỉ tiêu')) {
             return 'Tiếp tục thực hiện các chỉ tiêu còn thiếu và cải thiện kết quả';
         }
         if (str_contains($canhBao, 'Chưa đạt chỉ tiêu')) {

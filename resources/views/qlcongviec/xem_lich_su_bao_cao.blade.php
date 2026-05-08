@@ -27,7 +27,8 @@
 
     <div class="row g-4">
         <div class="col-xl-4 col-lg-5">
-            <div class="card border-0 shadow-sm rounded-4 mb-4">
+        <div class="sticky-top" style="top: 90px;">
+            <div class="card border-0 shadow-sm ">
                 <div class="card-body p-4 text-center">
                     @php
                         $trang_thai = [
@@ -67,10 +68,12 @@
                                 <div class="col-12">
                                     <div class="bg-light p-3 rounded-3">
                                         @foreach($dieuKien as $dk)
+                                        <div class="mb-1">
                                             <span><i class="bi bi-dot"></i> {{ $dk['ten'] ?? 'N/A' }}</span>
                                             <small class="text-primary">{{ $dk['toan_tu'] ?? '=' }}</small>
                                             <span class="fw-bold">{{ number_format($dk['gia_tri'] ?? 0) }}</span>
-                                            
+                                            <span class="small text-muted">({{ ($dk['pham_vi'] === 'bao_cao' ? 'Trên mỗi báo cáo' : 'Lũy kế') }})</span>
+                                        </div>   
                                         @endforeach
                                     </div>
                                 </div>
@@ -92,7 +95,7 @@
             </div>
 
             @if($cv->canh_bao)
-            <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4">
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden mt-3">
                 @php
                     $alertColor = 'success'; 
                     if (str_contains($cv->canh_bao, 'Chưa đạt chu kỳ') || 
@@ -116,6 +119,7 @@
             </div>
             @endif
         </div>
+        </div>
 
         <div class="col-xl-8 col-lg-7">
             <div class="d-flex justify-content-between align-items-center mb-3">
@@ -127,22 +131,49 @@
 
             <div class="timeline-container">
                 @foreach($baoCao as $thang => $list)
+
                 <div class="timeline-month mb-4">
                     <div class="d-flex align-items-center mb-3">
                         <div class="bg-primary text-white px-3 py-1 rounded-pill fw-bold small shadow-sm">
-                            Tháng {{ \Carbon\Carbon::createFromFormat('Y-m', $thang)->format('m/Y') }}
+                            Tháng {{ \Carbon\Carbon::createFromFormat('Y-m', $thang)->format('m/Y') }}  
                         </div>
                         <div class="flex-grow-1 border-bottom ms-3 opacity-25"></div>
                     </div>
 
                     <div class="timeline-items ms-2">
                         @foreach($list as $bc)
-                        <div class="card border-0 shadow-sm rounded-4 mb-3 timeline-card position-relative overflow-hidden">
+@php
+    $data = $bc->gia_tri_thuc_te ?? [];
+    $rules = $cv->phanCong->dieu_kien_phu ?? [];
+    $coLoi = false;
+
+    if($bc->chiTietPhanCong->phanCong->loai_kpi === 'nang_cao' && $bc->tien_do_thuc < 100){
+        $coLoi = true;
+    }
+
+    foreach($rules as $rule){
+        $key = $rule['key'];
+        $target = $rule['gia_tri'];
+        $value = $data[$key] ?? 0;
+
+        $dat = $value >= $target;
+        $phamVi = $rule['pham_vi'] ?? 'tat_ca';
+    
+        if(!$dat){
+            if($phamVi !== 'tat_ca'){
+                $coLoi = true;
+            }else{
+                $coLoi = true;
+            }
+        }
+    }
+@endphp
+                        <div class="card border-0 shadow-sm rounded-4 mb-3 timeline-card position-relative overflow-hidden {{ $coLoi  ? 'bg-danger-subtle border border-danger-subtle'  : ' ' }}">
                             @php
                                 $statusMap = [
                                     'da_duyet' => ['class' => 'bg-success', 'label' => 'Đã duyệt'],
                                     'chua_duyet' => ['class' => 'bg-warning', 'label' => 'Chờ duyệt'],
-                                    'tra_lai' => ['class' => 'bg-danger', 'label' => 'Từ chối']
+                                    'tra_lai' => ['class' => 'bg-danger', 'label' => 'Trả lại']
                                 ];
                                 $s = $statusMap[$bc->trangthai_duyet] ?? ['class' => 'bg-secondary', 'label' => $bc->trangthai_duyet];
                             @endphp
@@ -159,28 +190,15 @@
                                             <div>
                                                 <h6 class="fw-bold text-dark mb-1">Báo cáo sản lượng</h6>
                                                 <div class="d-flex justify-content-between align-items-center gap-2">
-                                                    
-                                                    <span class="badge bg-light text-primary border border-primary-subtle rounded-pill">
-                                                       Kết quả: @if($bc->gia_tri_thuc_te){
-                                                            @foreach($bc->gia_tri_thuc_te as $key => $value)
-                                                                <span class=" text-info">
-                                                                     {{ $key }}: <strong>{{ $value }}</strong>
-                                                                </span>
-                                                            @endforeach
-                                                        }
-                                                         @else {
+                                                    @if(empty($rules))   
+                                                        <span class="badge bg-light text-primary border border-primary-subtle rounded-pill">
+                                                        Kết quả thực hiện: 
                                                             <span class=" text-info">
                                                                 {{ $bc->tien_do_thuc }} 
                                                                 @if($bc->chiTietPhanCong->phanCong->loai_kpi === 'nang_cao') <span class=" text-info">%</span>@endif
                                                             </span>
-                                                         }
-                                                         @endif
-                                                    </span>
-                                                    @php
-                                                            $data = $bc->gia_tri_thuc_te ?? [];
-                                                            $rules = $cv->dieu_kien_phu ?? [];
-                                                        @endphp
-    
+                                                        </span>
+                                                    @else       
                                                         @foreach($rules as $rule)
                                                             @php
                                                                 $key = $rule['key'];
@@ -206,10 +224,11 @@
                                                             
                                                             
                                                             <span class="badge bg-white text-{{ $textClass }} border border-{{ $textClass }} fw-normal">
-                                                                {{ $rule['ten'] }}: <strong>{{ $value }}</strong>/{{ $target }}
+                                                                {{ $rule['ten'] }}: <strong>{{ $value }}</strong>/{{ $target }} 
                                                                 <i class="bi {{ $bi }} ms-1"></i>
                                                             </span>
                                                         @endforeach
+                                                    @endif
                                                 </div>
                                             </div>
                                         </div>
@@ -222,7 +241,7 @@
                                 </div>
                                 @if(!empty($bc->file_minh_chung))
                                     <div class="mt-3 p-3 bg-light">
-                                        <label class="small text-muted d-block mb-1">Minh chứng:</label>
+                                        <label class="small text-muted d-block mb-1"><i class="bi bi-paperclip"></i>  Minh chứng:</label>
                                         <div class="btn-group">
                                             <a href="{{ asset('storage/' . $bc->file_minh_chung) }}" target="_blank" class="btn btn-sm btn-outline-info">Xem file</a>
                                             <a href="{{ asset('storage/' . $bc->file_minh_chung) }}" download class="btn btn-sm btn-outline-primary">Tải về</a>
@@ -235,7 +254,7 @@
                                 </div>
                                 @endif
                                 @if($bc->ly_do_tra_lai)
-                                <div class="mt-3 p-3 bg-light rounded-4 border-0 small text-secondary">
+                                <div class="alert alert-danger mt-3 p-3 ">
                                     <i class="bi bi-quote me-1 opacity-50"></i>{{ $bc->ly_do_tra_lai }}
                                 </div>
                                 @endif

@@ -42,8 +42,8 @@
           icon: "success",
           title: "Thành công",
           text: "{{ session('success') }}",
-          showConfirmButton: false,      // Bỏ nút OK
-          timer: 3000,                   // Tự đóng sau 3 giây
+          showConfirmButton: false,      
+          timer: 3000,                  
           timerProgressBar: true
       });
     </script>
